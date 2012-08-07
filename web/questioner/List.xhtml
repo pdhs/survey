@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListQuestionerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListQuestionerEmpty}" rendered="#{questionerController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{questionerController.items.rowCount > 0}">
+                    <h:outputText value="#{questionerController.pagination.pageFirstItem + 1}..#{questionerController.pagination.pageLastItem + 1}/#{questionerController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{questionerController.previous}" value="#{bundle.Previous} #{questionerController.pagination.pageSize}" rendered="#{questionerController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{questionerController.next}" value="#{bundle.Next} #{questionerController.pagination.pageSize}" rendered="#{questionerController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{questionerController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Officer"/>
+                            </f:facet>
+                            <h:outputText value="#{item.person.name}"/>
+                        </h:column>                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_timeTakenHrs}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.timeTakenHrs}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_timeTakenMin}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.timeTakenMin}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_address}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.address}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_courtesy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.courtesy}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_efficiency}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.efficiency}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_facilities}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.facilities}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_general}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.general}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_listening}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.listening}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_noOfVisits}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.noOfVisits}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_officerName}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.officerName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_officerPost}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.officerPost}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_previousVisits}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.previousVisits}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_questionerDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.questionerDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_questionerTime}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.questionerTime}">
+                                <f:convertDateTime pattern="HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_reception}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.reception}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_reply}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.reply}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_requirement}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.requirement}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_requirementSatisfied}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.requirementSatisfied}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_response}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.response}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_suggestions}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.suggestions}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListQuestionerTitle_telephone}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.telephone}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{questionerController.prepareView}" value="#{bundle.ListQuestionerViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{questionerController.prepareEdit}" value="#{bundle.ListQuestionerEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{questionerController.destroy}" value="#{bundle.ListQuestionerDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{questionerController.prepareCreate}" value="#{bundle.ListQuestionerCreateLink}"/>
+                <br />
+                <br />
+                <h:commandLink value="#{bundle.ListQuestionerIndexLink}" action="/index" immediate="true" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

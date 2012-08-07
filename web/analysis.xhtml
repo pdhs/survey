@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateQuestionerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form>
+                <h:commandLink action="fullfilled" value="Fullfilled"/>
+                <br/>
+                <h:commandLink action="returnvisit" value="Return Visits"/>
+                <br/>
+                <h:commandLink action="duration" value="Duration"/>
+                <br/>
+                <h:commandLink action="returncount" value="Return Count"/>
+                <br/>
+                <h:commandLink action="response" value="Response Category"/>
+                <br/>                
+            </h:form>
+            <h:form>
+                <h:commandLink action="/questioner/List" value="Show All Questioner Items"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+
+</html>
+

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewQuestionerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_id}"/>
+                    <h:outputText value="#{questionerController.selected.id}" title="#{bundle.ViewQuestionerTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_timeTakenHrs}"/>
+                    <h:outputText value="#{questionerController.selected.timeTakenHrs}" title="#{bundle.ViewQuestionerTitle_timeTakenHrs}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_timeTakenMin}"/>
+                    <h:outputText value="#{questionerController.selected.timeTakenMin}" title="#{bundle.ViewQuestionerTitle_timeTakenMin}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_address}"/>
+                    <h:outputText value="#{questionerController.selected.address}" title="#{bundle.ViewQuestionerTitle_address}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_courtesy}"/>
+                    <h:outputText value="#{questionerController.selected.courtesy}" title="#{bundle.ViewQuestionerTitle_courtesy}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_efficiency}"/>
+                    <h:outputText value="#{questionerController.selected.efficiency}" title="#{bundle.ViewQuestionerTitle_efficiency}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_facilities}"/>
+                    <h:outputText value="#{questionerController.selected.facilities}" title="#{bundle.ViewQuestionerTitle_facilities}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_general}"/>
+                    <h:outputText value="#{questionerController.selected.general}" title="#{bundle.ViewQuestionerTitle_general}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_listening}"/>
+                    <h:outputText value="#{questionerController.selected.listening}" title="#{bundle.ViewQuestionerTitle_listening}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_name}"/>
+                    <h:outputText value="#{questionerController.selected.name}" title="#{bundle.ViewQuestionerTitle_name}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_noOfVisits}"/>
+                    <h:outputText value="#{questionerController.selected.noOfVisits}" title="#{bundle.ViewQuestionerTitle_noOfVisits}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_officerName}"/>
+                    <h:outputText value="#{questionerController.selected.officerName}" title="#{bundle.ViewQuestionerTitle_officerName}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_officerPost}"/>
+                    <h:outputText value="#{questionerController.selected.officerPost}" title="#{bundle.ViewQuestionerTitle_officerPost}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_previousVisits}"/>
+                    <h:outputText value="#{questionerController.selected.previousVisits}" title="#{bundle.ViewQuestionerTitle_previousVisits}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_questionerDate}"/>
+                    <h:outputText value="#{questionerController.selected.questionerDate}" title="#{bundle.ViewQuestionerTitle_questionerDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_questionerTime}"/>
+                    <h:outputText value="#{questionerController.selected.questionerTime}" title="#{bundle.ViewQuestionerTitle_questionerTime}">
+                        <f:convertDateTime pattern="HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_reception}"/>
+                    <h:outputText value="#{questionerController.selected.reception}" title="#{bundle.ViewQuestionerTitle_reception}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_reply}"/>
+                    <h:outputText value="#{questionerController.selected.reply}" title="#{bundle.ViewQuestionerTitle_reply}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_requirement}"/>
+                    <h:outputText value="#{questionerController.selected.requirement}" title="#{bundle.ViewQuestionerTitle_requirement}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_requirementSatisfied}"/>
+                    <h:outputText value="#{questionerController.selected.requirementSatisfied}" title="#{bundle.ViewQuestionerTitle_requirementSatisfied}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_response}"/>
+                    <h:outputText value="#{questionerController.selected.response}" title="#{bundle.ViewQuestionerTitle_response}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_suggestions}"/>
+                    <h:outputText value="#{questionerController.selected.suggestions}" title="#{bundle.ViewQuestionerTitle_suggestions}"/>
+                    <h:outputText value="#{bundle.ViewQuestionerLabel_telephone}"/>
+                    <h:outputText value="#{questionerController.selected.telephone}" title="#{bundle.ViewQuestionerTitle_telephone}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{questionerController.destroyAndView}" value="#{bundle.ViewQuestionerDestroyLink}"/>
+                <br />
+                <br />
+                <h:commandLink action="Edit" value="#{bundle.ViewQuestionerEditLink}"/>
+                <br />
+                <h:commandLink action="#{questionerController.prepareCreate}" value="#{bundle.ViewQuestionerCreateLink}" />
+                <br />
+                <h:commandLink action="#{questionerController.prepareList}" value="#{bundle.ViewQuestionerShowAllLink}"/>
+                <br />
+                <br />
+                <h:commandLink value="#{bundle.ViewQuestionerIndexLink}" action="/index" immediate="true" />
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

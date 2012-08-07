@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateQuestionerTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateQuestionerTitle_questionerDate}"/>
+                    <pou:calendar id="calDate" value="#{questionerController.selected.questionerDate}" pattern="dd/MMMM/yyyy">
+                    </pou:calendar>
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_questionerTime}" for="questionerTime" />
+                    <pou:calendar pattern="HH:mm" timeOnly="true" value="#{questionerController.selected.questionerTime}" title="#{bundle.CreateQuestionerTitle_questionerTime}" >
+                    </pou:calendar>
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_requirement}" for="requirement" />
+                    <h:inputTextarea rows="4" cols="30" id="requirement" value="#{questionerController.selected.requirement}" title="#{bundle.CreateQuestionerTitle_requirement}" />
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_requirementSatisfied}" for="requirementSatisfied" />
+                    <pou:selectBooleanCheckbox  id="requirementSatisfied" value="#{questionerController.selected.requirementSatisfied}" ></pou:selectBooleanCheckbox>
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_timeTakenHrs}" for="timeTakenHrs" />
+                    <h:inputText id="timeTakenHrs" value="#{questionerController.selected.timeTakenHrs}" title="#{bundle.CreateQuestionerTitle_timeTakenHrs}" />
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_timeTakenMin}" for="timeTakenMin" />
+                    <h:inputText id="timeTakenMin" value="#{questionerController.selected.timeTakenMin}" title="#{bundle.CreateQuestionerTitle_timeTakenMin}" />
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_previousVisits}" for="previousVisits" />
+                    <pou:selectBooleanCheckbox   id="previousVisits" value="#{questionerController.selected.previousVisits}" />
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_noOfVisits}" for="noOfVisits" />
+                    <h:inputText id="noOfVisits" value="#{questionerController.selected.noOfVisits}" title="#{bundle.CreateQuestionerTitle_noOfVisits}" />
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_officerName}" for="officerName" />
+                    <h:selectOneMenu id="reception" value="#{questionerController.selected.person}" title="#{bundle.CreateQuestionerTitle_reception}" >
+                         <f:selectItems value="#{responseController.persons}" var="per" itemLabel="#{per.name}" itemValue="#{per}" />
+                    </h:selectOneMenu>
+                   
+                    
+                    
+                    
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_officerPost}" for="officerPost" />
+                    <h:inputText id="officerPost" value="#{questionerController.selected.officerPost}" title="#{bundle.CreateQuestionerTitle_officerPost}" />
+
+
+
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_reception}" for="reception" />
+                    <h:selectOneMenu id="reception" value="#{questionerController.selected.reception}" title="#{bundle.CreateQuestionerTitle_reception}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
+                    </h:selectOneMenu>
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_courtesy}" for="courtesy" />
+                    <h:selectOneMenu id="courtesy" value="#{questionerController.selected.courtesy}" title="#{bundle.CreateQuestionerTitle_courtesy}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
+                    </h:selectOneMenu>
+
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_listening}" for="listening" />
+                    <h:selectOneMenu id="listening" value="#{questionerController.selected.listening}" title="#{bundle.CreateQuestionerTitle_listening}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
+                    </h:selectOneMenu>
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_reply}" for="reply" />
+                    <h:selectOneMenu id="reply" value="#{questionerController.selected.reply}" title="#{bundle.CreateQuestionerTitle_reply}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"  />
+                    </h:selectOneMenu>
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_response}" for="response" />
+                    <h:selectOneMenu id="response" value="#{questionerController.selected.response}" title="#{bundle.CreateQuestionerTitle_response}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"  />
+                    </h:selectOneMenu>
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_efficiency}" for="efficiency" />
+                    <h:selectOneMenu id="efficiency" value="#{questionerController.selected.efficiency}" title="#{bundle.CreateQuestionerTitle_efficiency}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_facilities}" for="facilities" />
+                    <h:selectOneMenu id="facilities" value="#{questionerController.selected.facilities}" title="#{bundle.CreateQuestionerTitle_facilities}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_general}" for="general" />
+                    <h:selectOneMenu id="general" value="#{questionerController.selected.general}" title="#{bundle.CreateQuestionerTitle_general}" >
+                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+
+
+
+
+
+
+
+
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_suggestions}" for="suggestions" />
+                    <h:inputTextarea rows="4" cols="30" id="suggestions" value="#{questionerController.selected.suggestions}" title="#{bundle.CreateQuestionerTitle_suggestions}" />
+
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_name}" for="name" />
+                    <h:inputText id="name" value="#{questionerController.selected.name}" title="#{bundle.CreateQuestionerTitle_name}" />
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_address}" for="address" />
+                    <h:inputTextarea rows="4" cols="30" id="address" value="#{questionerController.selected.address}" title="#{bundle.CreateQuestionerTitle_address}" />
+                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_telephone}" for="telephone" />
+                    <h:inputText id="telephone" value="#{questionerController.selected.telephone}" title="#{bundle.CreateQuestionerTitle_telephone}" />
+
+
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{questionerController.create}" value="#{bundle.CreateQuestionerSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{questionerController.prepareList}" value="#{bundle.CreateQuestionerShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:commandLink value="#{bundle.CreateQuestionerIndexLink}" action="/index" immediate="true" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
