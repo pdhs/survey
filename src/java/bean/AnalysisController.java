@@ -44,6 +44,7 @@ public class AnalysisController {
     CartesianChartModel ccmDuration;
     CartesianChartModel ccmReturnCount;
     CartesianChartModel ccmResponse;
+    CartesianChartModel ccmPersonFullfill;
 
     /**
      * Creates a new instance of AnalysisController
@@ -53,6 +54,10 @@ public class AnalysisController {
 
     public PersonFacade getPerFacade() {
         return perFacade;
+    }
+
+    public CartesianChartModel getCcmPersonFullfill() {
+        return ccmPersonFullfill;
     }
 
     public DataModel<Person> getPersons() {
@@ -332,6 +337,197 @@ public class AnalysisController {
         ccmResponse.addSeries(efficacy);
         ccmResponse.addSeries(facilities);
         ccmResponse.addSeries(overall);
+        return ccmResponse;
+    }
+
+    public CartesianChartModel getCcmResponseHor() {
+        ccmResponse = new CartesianChartModel();
+        ChartSeries csExcellent = new ChartSeries("Excellent");
+        ChartSeries csVeryGood = new ChartSeries("Very Good");
+        ChartSeries csGood = new ChartSeries("Good");
+        ChartSeries csWeak = new ChartSeries("Weak");
+
+
+        List<Questioner> questioners = new ArrayList<Questioner>();
+        questioners = getQueFacade().findAll();
+
+        long a1 = 0;
+        long a2 = 0;
+        long a3 = 0;
+        long a4 = 0;
+        long c1 = 0;
+        long c2 = 0;
+        long c3 = 0;
+        long c4 = 0;
+        long b1 = 0;
+        long b2 = 0;
+        long b3 = 0;
+        long b4 = 0;
+        long d1 = 0;
+        long d2 = 0;
+        long d3 = 0;
+        long d4 = 0;
+        long e1 = 0;
+        long e2 = 0;
+        long e3 = 0;
+        long e4 = 0;
+        long g1 = 0;
+        long g2 = 0;
+        long g3 = 0;
+        long g4 = 0;
+        long f1 = 0;
+        long f2 = 0;
+        long f3 = 0;
+        long f4 = 0;
+        long h1 = 0;
+        long h2 = 0;
+        long h3 = 0;
+        long h4 = 0;
+
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'").get(0);
+
+        for (Questioner q : questioners) {
+
+            if (q.getReception() == null) {
+            } else if (q.getReception().equals(excellent)) {
+                a1++;
+            } else if (q.getReception().equals(veryGood)) {
+                a2++;
+            } else if (q.getReception().equals(good)) {
+                a3++;
+            } else if (q.getReception().equals(poor)) {
+                a4++;
+            }
+
+            if (q.getCourtesy() == null) {
+            } else if (q.getCourtesy().equals(excellent)) {
+                b1++;
+            } else if (q.getCourtesy().equals(veryGood)) {
+                b2++;
+            } else if (q.getCourtesy().equals(good)) {
+                b3++;
+            } else if (q.getCourtesy().equals(poor)) {
+                b4++;
+            }
+
+            if (q.getListening() == null) {
+            } else if (q.getListening().equals(excellent)) {
+                c1++;
+            } else if (q.getListening().equals(veryGood)) {
+                c2++;
+            } else if (q.getListening().equals(good)) {
+                c3++;
+            } else if (q.getListening().equals(poor)) {
+                c4++;
+            }
+
+            if (q.getReply() == null) {
+            } else if (q.getReply().equals(excellent)) {
+                d1++;
+            } else if (q.getReply().equals(veryGood)) {
+                d2++;
+            } else if (q.getReply().equals(good)) {
+                d3++;
+            } else if (q.getReply().equals(poor)) {
+                d4++;
+            }
+
+            if (q.getResponse() == null) {
+            } else if (q.getResponse().equals(excellent)) {
+                e1++;
+            } else if (q.getResponse().equals(veryGood)) {
+                e2++;
+            } else if (q.getResponse().equals(good)) {
+                e3++;
+            } else if (q.getResponse().equals(poor)) {
+                e4++;
+            }
+
+            if (q.getEfficiency() == null) {
+            } else if (q.getEfficiency().equals(excellent)) {
+                f1++;
+            } else if (q.getEfficiency().equals(veryGood)) {
+                f2++;
+            } else if (q.getEfficiency().equals(good)) {
+                f3++;
+            } else if (q.getEfficiency().equals(poor)) {
+                f4++;
+            }
+
+            if (q.getFacilities() == null) {
+            } else if (q.getFacilities().equals(excellent)) {
+                g1++;
+            } else if (q.getFacilities().equals(veryGood)) {
+                g2++;
+            } else if (q.getFacilities().equals(good)) {
+                g3++;
+            } else if (q.getFacilities().equals(poor)) {
+                g4++;
+            }
+
+            if (q.getGeneral() == null) {
+            } else if (q.getGeneral().equals(excellent)) {
+                h1++;
+            } else if (q.getGeneral().equals(veryGood)) {
+                h2++;
+            } else if (q.getGeneral().equals(good)) {
+                h3++;
+            } else if (q.getGeneral().equals(poor)) {
+                h4++;
+            }
+
+
+
+        }
+
+
+
+
+
+        csExcellent.set("Reception", a1);
+        csExcellent.set("Courtesy", b1);
+        csExcellent.set("Listening", c1);
+        csExcellent.set("Reply", d1);
+        csExcellent.set("Response", e1);
+        csExcellent.set("Efficiency", f1);
+        csExcellent.set("Facilities", g1);
+        csExcellent.set("Overall", h1);
+
+        csVeryGood.set("Reception", a2);
+        csVeryGood.set("Courtesy", b2);
+        csVeryGood.set("Listening", c2);
+        csVeryGood.set("Reply", d2);
+        csVeryGood.set("Response", e2);
+        csVeryGood.set("Efficiency", f2);
+        csVeryGood.set("Facilities", g2);
+        csVeryGood.set("Overall", h2);
+
+        csGood.set("Reception", a3);
+        csGood.set("Courtesy", b3);
+        csGood.set("Listening", c3);
+        csGood.set("Reply", d3);
+        csGood.set("Response", e3);
+        csGood.set("Efficiency", f3);
+        csGood.set("Facilities", g3);
+        csGood.set("Overall", h3);
+
+        csWeak.set("Reception", a4);
+        csWeak.set("Courtesy", b4);
+        csWeak.set("Listening", c4);
+        csWeak.set("Reply", d4);
+        csWeak.set("Response", e4);
+        csWeak.set("Efficiency", f4);
+        csWeak.set("Facilities", g4);
+        csWeak.set("Overall", h4);
+
+
+        ccmResponse.addSeries(csExcellent);
+        ccmResponse.addSeries(csVeryGood);
+        ccmResponse.addSeries(csGood);
+        ccmResponse.addSeries(csWeak);
         return ccmResponse;
     }
 

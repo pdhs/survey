@@ -41,7 +41,7 @@
                     <h:inputText id="noOfVisits" value="#{questionerController.selected.noOfVisits}" title="#{bundle.CreateQuestionerTitle_noOfVisits}" />
 
                     <h:outputLabel value="#{bundle.CreateQuestionerLabel_officerName}" for="officerName" />
-                    <h:selectOneMenu id="reception" value="#{questionerController.selected.person}" title="#{bundle.CreateQuestionerTitle_reception}" >
+                    <h:selectOneMenu id="cmbStaff" value="#{questionerController.selected.person}" title="#{bundle.CreateQuestionerTitle_reception}" >
                          <f:selectItems value="#{responseController.persons}" var="per" itemLabel="#{per.name}" itemValue="#{per}" />
                     </h:selectOneMenu>
                    
