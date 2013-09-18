@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pou="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -14,17 +14,41 @@
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <h:commandLink action="fullfilled" value="Fullfilled"/>
-                <br/>
-                <h:commandLink action="returnvisit" value="Return Visits"/>
-                <br/>
-                <h:commandLink action="duration" value="Duration"/>
-                <br/>
-                <h:commandLink action="returncount" value="Return Count"/>
-                <br/>
-                <h:commandLink action="response" value="Response Category"/>
-                <h:commandLink action="responseh" value="Response Category by Criteria"/>
-                <br/>                
+                <p:panelGrid columns="3" >
+                    <p:panel >
+                        <f:facet name="header" >
+                            <h:outputLabel value="Overall Analysis" />
+                        </f:facet>
+                        <p:panelGrid columns="1" >
+                            <h:commandLink action="fullfilled" value="Fullfilled"/>
+                            <h:commandLink action="returnvisit" value="Return Visits"/>
+                            <h:commandLink action="duration" value="Duration"/>
+                            <h:commandLink action="returncount" value="Return Count"/>
+                            <h:commandLink action="response" value="Response Category"/>
+                            <h:commandLink action="responseh" value="Response Category by Criteria"/>
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel >
+                        <f:facet name="header" >
+                            <h:outputLabel value="Annual Analysis" />
+                        </f:facet>
+                        <p:panelGrid columns="1" >
+                            <h:commandLink action="response_yearly" value="Full filled Yearly"/>
+                            <h:commandLink action="returnvisit_yearly" value="Return Visits"/>
+                            
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel >
+                        <f:facet name="header" >
+                            <h:outputLabel value="All Reports" />
+                        </f:facet>
+                        <p:panelGrid columns="1" >
+                            <h:commandLink action="/questioner/List" value="Show All Questioner Items"/>
+                        </p:panelGrid>
+                    </p:panel>
+
+                </p:panelGrid>
             </h:form>
             <h:form>
                 <h:commandLink action="/questioner/List" value="Show All Questioner Items"/>

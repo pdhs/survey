@@ -6,6 +6,7 @@ import faces.util.PaginationHelper;
 import bean.QuestionerFacade;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -14,8 +15,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
 @ManagedBean(name = "questionerController")
@@ -23,12 +22,22 @@ import javax.faces.model.SelectItem;
 public class QuestionerController implements Serializable {
 
     private Questioner current;
-    private DataModel items = null;
+    private List<Questioner> items = null;
     @EJB
     private bean.QuestionerFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
+    public Questioner getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(Questioner current) {
+        this.current = current;
+    }
+
+    
+    
     public QuestionerController() {
     }
 
@@ -44,23 +53,23 @@ public class QuestionerController implements Serializable {
         return ejbFacade;
     }
 
-    public PaginationHelper getPagination() {
-        if (pagination == null) {
-            pagination = new PaginationHelper(10) {
-
-                @Override
-                public int getItemsCount() {
-                    return getFacade().count();
-                }
-
-                @Override
-                public DataModel createPageDataModel() {
-                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
-                }
-            };
-        }
-        return pagination;
-    }
+//    public PaginationHelper getPagination() {
+//        if (pagination == null) {
+//            pagination = new PaginationHelper(10) {
+//
+//                @Override
+//                public int getItemsCount() {
+//                    return getFacade().count();
+//                }
+//
+//                @Override
+//                public DataModel createPageDataModel() {
+//                    return new ListDataModel(getFacade().findRange(new int[]{getPageFirstItem(), getPageFirstItem() + getPageSize()}));
+//                }
+//            };
+//        }
+//        return pagination;
+//    }
 
     public String prepareList() {
         recreateModel();
@@ -68,14 +77,11 @@ public class QuestionerController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Questioner) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "View";
     }
 
     public String prepareCreate() {
         current = new Questioner();
-        selectedItemIndex = -1;
         return "Create";
     }
 
@@ -83,16 +89,16 @@ public class QuestionerController implements Serializable {
         try {
             getFacade().create(current);
             JsfUtil.addSuccessMessage(ResourceBundle.getBundle("/Bundle").getString("QuestionerCreated"));
+            current = new Questioner();
             return prepareCreate();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ResourceBundle.getBundle("/Bundle").getString("PersistenceErrorOccured"));
             return null;
         }
+        
     }
 
     public String prepareEdit() {
-        current = (Questioner) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         return "Edit";
     }
 
@@ -108,8 +114,6 @@ public class QuestionerController implements Serializable {
     }
 
     public String destroy() {
-        current = (Questioner) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
         performDestroy();
         recreatePagination();
         recreateModel();
@@ -153,9 +157,9 @@ public class QuestionerController implements Serializable {
         }
     }
 
-    public DataModel getItems() {
+    public List<Questioner> getItems() {
         if (items == null) {
-            items = getPagination().createPageDataModel();
+            items = getFacade().findBySQL("select q from Questioner q order by q.questionerDate");
         }
         return items;
     }
@@ -166,18 +170,6 @@ public class QuestionerController implements Serializable {
 
     private void recreatePagination() {
         pagination = null;
-    }
-
-    public String next() {
-        getPagination().nextPage();
-        recreateModel();
-        return "List";
-    }
-
-    public String previous() {
-        getPagination().previousPage();
-        recreateModel();
-        return "List";
     }
 
     public SelectItem[] getItemsAvailableSelectMany() {

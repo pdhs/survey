@@ -4,10 +4,12 @@
  */
 package bean;
 
+import Data.YearCount;
 import entity.Person;
 import entity.Questioner;
 import entity.Response;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -45,6 +47,114 @@ public class AnalysisController {
     CartesianChartModel ccmReturnCount;
     CartesianChartModel ccmResponse;
     CartesianChartModel ccmPersonFullfill;
+    CartesianChartModel pcmYearlyPreviousVisits;
+    CartesianChartModel ccmYearlyFillfilled;
+
+    private void addToYearCount(List<YearCount> lst, int year, int count, int pos, int neg) {
+        boolean found = false;
+        for (YearCount yc : lst) {
+            if (yc.getYear() == year) {
+                System.out.println("Year " + year + " already there.");
+                System.out.println("Pre count " + yc.getCount());
+                yc.setCount(yc.getCount() + count);
+                yc.setNeg(yc.getNeg() + neg);
+                yc.setPos(yc.getPos() + pos);
+                System.out.println("Post count " + yc.getCount());
+                found = true;
+            }
+        }
+        if (found == false) {
+            System.out.println("New Year create  " + year);
+            YearCount yc = new YearCount();
+            yc.setYear(year);
+            yc.setCount(count);
+            yc.setNeg(neg);
+            yc.setPos(pos);
+            lst.add(yc);
+        }
+    }
+
+    public CartesianChartModel getPcmYearlyPreviousVisits() {
+        List<Questioner> questioners;
+        questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
+        List<YearCount> lst = new ArrayList<YearCount>();
+        for (Questioner q : questioners) {
+            if (q.getQuestionerDate() != null) {
+                if (q.getPreviousVisits()) {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 1, 0);
+                } else {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 0, 1);
+                }
+            }
+        }
+        pcmYearlyPreviousVisits = new CartesianChartModel();
+        ChartSeries csp = new ChartSeries("Yes");
+        ChartSeries csn = new ChartSeries("No");
+        for (YearCount yc : lst) {
+            Integer pp = yc.getPos() * 100 / yc.getCount();
+            Integer np = yc.getNeg() * 100 / yc.getCount();
+            System.out.println("count is " + yc.getCount());
+            System.out.println("p is " + yc.getPos());
+            System.out.println("n is " + yc.getNeg());
+            System.out.println("pp is " + pp);
+            System.out.println("np is " + np);
+            csp.set(yc.getYear() + "", pp);
+            csn.set(yc.getYear() + "", np);
+        }
+        pcmYearlyPreviousVisits.addSeries(csp);
+        pcmYearlyPreviousVisits.addSeries(csn);
+        return pcmYearlyPreviousVisits;
+    }
+
+    public void setPcmYearlyPreviousVisits(CartesianChartModel pcmYearlyPreviousVisits) {
+        this.pcmYearlyPreviousVisits = pcmYearlyPreviousVisits;
+    }
+
+    
+    
+    public CartesianChartModel getCcmYearlyFillfilled() {
+        List<Questioner> questioners;
+        questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
+        List<YearCount> lst = new ArrayList<YearCount>();
+        for (Questioner q : questioners) {
+            if (q.getQuestionerDate() != null) {
+                if (q.getRequirementSatisfied()) {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 1, 0);
+                } else {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 0, 1);
+                }
+            }
+        }
+        ccmYearlyFillfilled = new CartesianChartModel();
+        ChartSeries csp = new ChartSeries("Yes");
+        ChartSeries csn = new ChartSeries("No");
+        for (YearCount yc : lst) {
+            Integer pp = yc.getPos() * 100 / yc.getCount();
+            Integer np = yc.getNeg() * 100 / yc.getCount();
+            System.out.println("count is " + yc.getCount());
+            System.out.println("p is " + yc.getPos());
+            System.out.println("n is " + yc.getNeg());
+            System.out.println("pp is " + pp);
+            System.out.println("np is " + np);
+            csp.set(yc.getYear() + "", pp);
+            csn.set(yc.getYear() + "", np);
+        }
+        ccmYearlyFillfilled.addSeries(csp);
+        ccmYearlyFillfilled.addSeries(csn);
+        return ccmYearlyFillfilled;
+    }
+
+    public void setCcmYearlyFillfilled(CartesianChartModel ccmYearlyFillfilled) {
+        this.ccmYearlyFillfilled = ccmYearlyFillfilled;
+    }
 
     /**
      * Creates a new instance of AnalysisController
@@ -328,7 +438,6 @@ public class AnalysisController {
         overall.set("Very Good", h2);
         overall.set("Good", h3);
         overall.set("Poor", h4);
-
         ccmResponse.addSeries(reception);
         ccmResponse.addSeries(courtesy);
         ccmResponse.addSeries(listening);

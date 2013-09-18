@@ -14,10 +14,13 @@
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <h:commandLink action="/response/List" value="Show All Response Items"/>
+                <h:commandLink action="/questioner/List" value="Show All Questioner Items"/>
             </h:form>
             <h:form>
-                <h:commandLink action="/questioner/List" value="Show All Questioner Items"/>
+                <h:commandLink action="/questioner/List" value="Add New"/>
+            </h:form>
+            <h:form>
+                <h:commandLink action="analysis" value="Analysis"/>
             </h:form>
         </ui:define>
     </ui:composition>
