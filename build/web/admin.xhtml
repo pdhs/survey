@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pou="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -14,13 +14,27 @@
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <h:commandLink rendered="false" action="#{analysisController.addAllPersons}" value="Add All Persons Again"/>
-                <br/>
-                <h:inputText value="#{analysisController.personName}"/><br/>
-                <h:commandLink action="#{analysisController.addPerson}" value="Add Person"/>
-                <br/>
+                <p:panel header="List of Persons" >
+                    <p:focus id="detailFocus" context="gpDetail" />
+                    <p:selectOneListbox  id="lstSelect"  value="#{personController.current}" style="min-width: 223px">
+                        <f:selectItems value="#{personController.listItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
+                    </p:selectOneListbox>
+                    <p:commandButton ajax="false" value="Delete" action="#{personController.destroy()}" ></p:commandButton>
+                    <p:commandButton  ajax="false"  value="Refresh" action="#{personController.fillItems()}" ></p:commandButton>
+                </p:panel>
+                
+                <p:panel header="Add New" >
+                    <p:panelGrid columns="2" id="gpDetail">
+                        <h:outputLabel value="Name" ></h:outputLabel>
+                        <h:inputText value="#{analysisController.personName}"/>
+                        <h:outputLabel value="Designation" ></h:outputLabel>
+                        <h:inputText value="#{analysisController.designation}"/>
+                        <h:commandButton action="#{analysisController.addPerson}" value="Add Person"/>
+                    </p:panelGrid>
+                </p:panel>
+
             </h:form>
-            
+
         </ui:define>
     </ui:composition>
 

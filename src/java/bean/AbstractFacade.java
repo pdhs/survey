@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
  * @author buddhika
  */
 public abstract class AbstractFacade<T> {
+
     private Class<T> entityClass;
 
     public AbstractFacade(Class<T> entityClass) {
@@ -60,26 +61,30 @@ public abstract class AbstractFacade<T> {
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
-    
-    
-   public List<T> findBySQL(String temSQL) {
+
+    public List<T> findBySQL(String temSQL) {
         TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
         return qry.getResultList();
     }
 
-    
     public List<T> findBySQL(String temSQL, Map<String, Date> parameters) {
         TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
-        Set s=parameters.entrySet();
-        Iterator it=s.iterator();
-        while (it.hasNext()){
-            Map.Entry m=(Map.Entry)it.next();
-            Date pVal =  (Date) m.getValue();
-            String pPara=(String) m.getKey();
-            qry.setParameter(pPara, pVal, TemporalType.DATE);
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+
+            String pPara = (String) m.getKey();
+            Object pVal = m.getValue();
+            if (pVal instanceof Date) {
+                Date pValDate = (Date) m.getValue();
+                qry.setParameter(pPara, pValDate, TemporalType.DATE);
+            } else {
+                qry.setParameter(pPara, pVal);
+            }
             System.out.println("Parameter " + pPara + "\tVal" + pVal);
         }
         return qry.getResultList();
-    }        
-    
+    }
+
 }

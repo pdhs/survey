@@ -8,6 +8,9 @@ import bean.ResponseFacade;
 import entity.Person;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -42,6 +45,9 @@ public class ResponseController implements Serializable {
         this.personFacade = personFacade;
     }
 
+    
+    
+    
     public DataModel<Person> getPersons() {
         return new ListDataModel<Person>(getPersonFacade().findAll());
     }
@@ -249,4 +255,6 @@ public class ResponseController implements Serializable {
             }
         }
     }
+    
+    
 }

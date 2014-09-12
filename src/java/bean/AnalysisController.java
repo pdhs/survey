@@ -8,14 +8,18 @@ import Data.YearCount;
 import entity.Person;
 import entity.Questioner;
 import entity.Response;
+import faces.PersonController;
+import faces.util.JsfUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.inject.Inject;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
@@ -49,6 +53,16 @@ public class AnalysisController {
     CartesianChartModel ccmPersonFullfill;
     CartesianChartModel pcmYearlyPreviousVisits;
     CartesianChartModel ccmYearlyFillfilled;
+
+    String designation;
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
 
     private void addToYearCount(List<YearCount> lst, int year, int count, int pos, int neg) {
         boolean found = false;
@@ -114,8 +128,6 @@ public class AnalysisController {
         this.pcmYearlyPreviousVisits = pcmYearlyPreviousVisits;
     }
 
-    
-    
     public CartesianChartModel getCcmYearlyFillfilled() {
         List<Questioner> questioners;
         questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
@@ -199,12 +211,19 @@ public class AnalysisController {
     }
 
     public void addPerson() {
+        if (personName == null || personName.trim().equals("")) {
+            JsfUtil.addErrorMessage("Name ?");
+            return;
+        }
         Person temPerson = new Person();
         temPerson.setName(personName);
+        temPerson.setDesignation(designation);
         getPerFacade().create(temPerson);
+        JsfUtil.addSuccessMessage("Saved");
         personName = "";
         person = temPerson;
     }
+
 
     public void addAllPersons() {
         System.out.print("1");
@@ -265,8 +284,6 @@ public class AnalysisController {
         ChartSeries facilities = new ChartSeries("Facilities");
         ChartSeries overall = new ChartSeries("Overall");
 
-
-
         List<Questioner> questioners = new ArrayList<Questioner>();
         questioners = getQueFacade().findAll();
 
@@ -398,13 +415,7 @@ public class AnalysisController {
                 h4++;
             }
 
-
-
         }
-
-
-
-
 
         reception.set("Excellent", a1);
         reception.set("Very Good", a2);
@@ -456,7 +467,6 @@ public class AnalysisController {
         ChartSeries csGood = new ChartSeries("Good");
         ChartSeries csWeak = new ChartSeries("Weak");
 
-
         List<Questioner> questioners = new ArrayList<Questioner>();
         questioners = getQueFacade().findAll();
 
@@ -588,13 +598,7 @@ public class AnalysisController {
                 h4++;
             }
 
-
-
         }
-
-
-
-
 
         csExcellent.set("Reception", a1);
         csExcellent.set("Courtesy", b1);
@@ -631,7 +635,6 @@ public class AnalysisController {
         csWeak.set("Efficiency", f4);
         csWeak.set("Facilities", g4);
         csWeak.set("Overall", h4);
-
 
         ccmResponse.addSeries(csExcellent);
         ccmResponse.addSeries(csVeryGood);
@@ -691,10 +694,7 @@ public class AnalysisController {
         visitCount.set("Five Visits", a5);
         visitCount.set("More than 5 visits", m5);
 
-
         ccmReturnCount.addSeries(visitCount);
-
-
 
         return ccmReturnCount;
     }
@@ -732,8 +732,6 @@ public class AnalysisController {
                 minutes = 0;
             }
 
-
-
             if (minutes <= 0) {
             } else if (minutes <= 15) {
                 a15++;
@@ -767,7 +765,6 @@ public class AnalysisController {
         duration.set("Less then 4 hours", a240);
         duration.set("Less then 5 hours", a300);
         duration.set("More then 5 hours", a);
-
 
         ccmDuration.addSeries(duration);
 

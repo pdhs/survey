@@ -16,12 +16,24 @@ import javax.persistence.Id;
  */
 @Entity
 public class Person implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     String name;
+    String designation;
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+    
+    
 
     public String getName() {
         return name;
@@ -30,9 +42,7 @@ public class Person implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
-    
-    
+
     public Long getId() {
         return id;
     }
@@ -65,5 +75,5 @@ public class Person implements Serializable {
     public String toString() {
         return "entity.Person[ id=" + id + " ]";
     }
-    
+
 }

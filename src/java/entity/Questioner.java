@@ -14,11 +14,12 @@ import javax.persistence.*;
  */
 @Entity
 public class Questioner implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
- @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.DATE)
     Date questionerDate;
     @Temporal(javax.persistence.TemporalType.TIME)
     Date questionerTime;
@@ -53,7 +54,7 @@ public class Questioner implements Serializable {
     @Lob
     String address;
     String telephone;
-    
+
     @ManyToOne
     Person person;
 
@@ -64,10 +65,7 @@ public class Questioner implements Serializable {
     public void setPerson(Person person) {
         this.person = person;
     }
-    
-    
-    
-    
+
     public Long getId() {
         return id;
     }
@@ -252,8 +250,6 @@ public class Questioner implements Serializable {
         this.telephone = telephone;
     }
 
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -278,5 +274,5 @@ public class Questioner implements Serializable {
     public String toString() {
         return "entity.Questioner[ id=" + id + " ]";
     }
-    
+
 }

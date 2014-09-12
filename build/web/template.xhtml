@@ -19,12 +19,18 @@
                 දකුණු පළාත
             </h2>          
         </pou:panel>
-        <pou:menu  styleClass="ui-menubar" style="width: auto;">
-            <pou:menuitem value="Home" url="/faces/index.xhtml"/>
-            <pou:menuitem value="Fill" url="/faces/questioner/Create.xhtml"/>
-            <pou:menuitem value="Analysis" url="/faces/analysis.xhtml"/>
-            <pou:menuitem value="Administrator" url="/faces/admin.xhtml"/>
-        </pou:menu>
+
+        <h:form >
+
+            <pou:menu  styleClass="ui-menubar" style="width: auto;">
+                <pou:menuitem value="Home" url="/faces/index.xhtml"/>
+                <pou:menuitem value="Fill" url="/faces/questioner/Create.xhtml"/>
+                <pou:menuitem value="Analysis" url="/faces/analysis.xhtml"/>
+                <pou:menuitem value="Administrator" url="/faces/admin.xhtml"/>
+            </pou:menu>
+
+        </h:form>
+
         <pou:panel >
             <ui:insert name="body">Default Body</ui:insert>
         </pou:panel>
