@@ -163,6 +163,43 @@ public class AnalysisController {
         ccmYearlyFillfilled.addSeries(csn);
         return ccmYearlyFillfilled;
     }
+    
+    
+    public CartesianChartModel getCcmYearlyRepeatVisits() {
+        List<Questioner> questioners;
+        questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
+        List<YearCount> lst = new ArrayList<YearCount>();
+        for (Questioner q : questioners) {
+            if (q.getQuestionerDate() != null) {
+                if (q.getPreviousVisits()) {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 1, 0);
+                } else {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 0, 1);
+                }
+            }
+        }
+        ccmYearlyFillfilled = new CartesianChartModel();
+        ChartSeries csp = new ChartSeries("Yes");
+        ChartSeries csn = new ChartSeries("No");
+        for (YearCount yc : lst) {
+            Integer pp = yc.getPos() * 100 / yc.getCount();
+            Integer np = yc.getNeg() * 100 / yc.getCount();
+            System.out.println("count is " + yc.getCount());
+            System.out.println("p is " + yc.getPos());
+            System.out.println("n is " + yc.getNeg());
+            System.out.println("pp is " + pp);
+            System.out.println("np is " + np);
+            csp.set(yc.getYear() + "", pp);
+            csn.set(yc.getYear() + "", np);
+        }
+        ccmYearlyFillfilled.addSeries(csp);
+        ccmYearlyFillfilled.addSeries(csn);
+        return ccmYearlyFillfilled;
+    }
 
     public void setCcmYearlyFillfilled(CartesianChartModel ccmYearlyFillfilled) {
         this.ccmYearlyFillfilled = ccmYearlyFillfilled;
@@ -320,10 +357,10 @@ public class AnalysisController {
         long h3 = 0;
         long h4 = 0;
 
-        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'").get(0);
-        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'").get(0);
-        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'").get(0);
-        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'").get(0);
+        Response excellent = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'");
+        Response veryGood = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'");
+        Response good = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'");
+        Response poor = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'");
 
         for (Questioner q : questioners) {
 
