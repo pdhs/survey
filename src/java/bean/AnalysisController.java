@@ -320,10 +320,10 @@ public class AnalysisController {
         long h3 = 0;
         long h4 = 0;
 
-        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'").get(0);
-        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'").get(0);
-        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'").get(0);
-        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'").get(0);
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
 
         for (Questioner q : questioners) {
 
@@ -503,10 +503,10 @@ public class AnalysisController {
         long h3 = 0;
         long h4 = 0;
 
-        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'").get(0);
-        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'").get(0);
-        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'").get(0);
-        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'").get(0);
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
 
         for (Questioner q : questioners) {
 
