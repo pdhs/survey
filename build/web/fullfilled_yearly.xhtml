@@ -10,12 +10,19 @@
 
     <ui:composition template="template.xhtml">
         <ui:define name="title">
-            <h:outputText value="Requirement Full Filled"></h:outputText>
+            <h:outputText value="Requirement Full Filled - Yearly Analysis"></h:outputText>
         </ui:define>
+
         <ui:define name="body">
-            <h2>Fill Filled</h2>
-            <pou:barChart id="basic" value="#{analysisController.ccmYearlyFillfilled}" legendPosition="ne"
-                          title="Full Filled" style="height:300px"/>
+            <table >
+                <tr>
+                    <td>
+                        <h2>Requirement Full Filled - Yearly Analysis</h2>
+                        <pou:barChart id="basic" value="#{analysisController.ccmYearlyFillfilled}" legendPosition="ne"
+                                      title="Requirement Full Filled - Yearly Analysis" style="height:300px"/>
+                    </td>
+                </tr>
+            </table>
         </ui:define>
     </ui:composition>
 
