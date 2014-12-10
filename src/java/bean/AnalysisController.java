@@ -8,21 +8,25 @@ import Data.YearCount;
 import entity.Person;
 import entity.Questioner;
 import entity.Response;
-import faces.PersonController;
 import faces.util.JsfUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
-import javax.inject.Inject;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.Months;
 
 /**
  *
@@ -54,7 +58,36 @@ public class AnalysisController {
     CartesianChartModel pcmYearlyPreviousVisits;
     CartesianChartModel ccmYearlyFillfilled;
 
+    CartesianChartModel ccmReocrds;
+
     String designation;
+
+    Date fromDate;
+    Date toDate;
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public CartesianChartModel getCcmReocrds() {
+        return ccmReocrds;
+    }
+
+    public void setCcmReocrds(CartesianChartModel ccmReocrds) {
+        this.ccmReocrds = ccmReocrds;
+    }
 
     public String getDesignation() {
         return designation;
@@ -163,8 +196,71 @@ public class AnalysisController {
         ccmYearlyFillfilled.addSeries(csn);
         return ccmYearlyFillfilled;
     }
-    
-    
+
+    public void fillMonthlyAnalysis() {
+        int months = Months.monthsBetween(new DateTime(fromDate), new DateTime(toDate)).getMonths(); 
+        Calendar c = Calendar.getInstance();
+        c.setTime(fromDate);
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        String sql;
+        Map map;
+        
+        for(int m =0;m>months;m++){
+            map = new HashMap();
+            sql = "select q from Questioner q where q.questionerDate between :fd and :td";
+            
+            Calendar fd = Calendar.getInstance();
+            fd.set(Calendar.YEAR, year);
+            fd.set(Calendar.MONTH,month + m);
+            fd.set(Calendar.DATE, 1);
+            
+            Calendar td = Calendar.getInstance();
+            td.set(Calendar.YEAR, year);
+            td.set(Calendar.MONTH,month + m + 1);
+            td.add(Calendar.DATE, -1);
+            
+            map.put("fd", fd.getTime());
+            map.put("td", td.getTime());
+            
+            
+        }
+        
+        
+        List<Questioner> questioners;
+        questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
+        List<YearCount> lst = new ArrayList<YearCount>();
+        for (Questioner q : questioners) {
+            if (q.getQuestionerDate() != null) {
+                if (q.getRequirementSatisfied()) {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 1, 0);
+                } else {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(q.getQuestionerDate());
+                    addToYearCount(lst, c.get(Calendar.YEAR), 1, 0, 1);
+                }
+            }
+        }
+        ccmYearlyFillfilled = new CartesianChartModel();
+        ChartSeries csp = new ChartSeries("Yes");
+        ChartSeries csn = new ChartSeries("No");
+        for (YearCount yc : lst) {
+            Integer pp = yc.getPos() * 100 / yc.getCount();
+            Integer np = yc.getNeg() * 100 / yc.getCount();
+            System.out.println("count is " + yc.getCount());
+            System.out.println("p is " + yc.getPos());
+            System.out.println("n is " + yc.getNeg());
+            System.out.println("pp is " + pp);
+            System.out.println("np is " + np);
+            csp.set(yc.getYear() + "", pp);
+            csn.set(yc.getYear() + "", np);
+        }
+        ccmReocrds.addSeries(csp);
+        ccmReocrds.addSeries(csn);
+    }
+
     public CartesianChartModel getCcmYearlyRepeatVisits() {
         List<Questioner> questioners;
         questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
@@ -260,7 +356,6 @@ public class AnalysisController {
         personName = "";
         person = temPerson;
     }
-
 
     public void addAllPersons() {
         System.out.print("1");

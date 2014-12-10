@@ -19,6 +19,7 @@
                         <f:facet name="header" >
                             <h:outputLabel value="Overall Analysis" />
                         </f:facet>
+                        
                         <p:panelGrid columns="1" >
                             <h:commandLink action="fullfilled" value="Fullfilled"/>
                             <h:commandLink action="returnvisit" value="Return Visits"/>
@@ -27,6 +28,12 @@
                             <h:commandLink action="response" value="Response Category"/>
                             <h:commandLink action="responseh" value="Response Category by Criteria"/>
                         </p:panelGrid>
+                        
+                        <p:panelGrid columns="1" >
+                            <h:commandLink action="Monthly Analysis" value="monthly_analysis"/>
+                            <h:commandLink action="Quartely Analysis" value="Return Visits"/>
+                        </p:panelGrid>
+                        
                     </p:panel>
 
                     <p:panel >
