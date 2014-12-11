@@ -8,18 +8,22 @@ import Data.YearCount;
 import entity.Person;
 import entity.Questioner;
 import entity.Response;
-import faces.PersonController;
 import faces.util.JsfUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
-import javax.inject.Inject;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.ReadableInstant;
+import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
@@ -54,7 +58,38 @@ public class AnalysisController {
     CartesianChartModel pcmYearlyPreviousVisits;
     CartesianChartModel ccmYearlyFillfilled;
 
+    CartesianChartModel ccmReocrds;
+
+    BarChartModel barChartModel;
+
     String designation;
+
+    Date fromDate;
+    Date toDate;
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public CartesianChartModel getCcmReocrds() {
+        return ccmReocrds;
+    }
+
+    public void setCcmReocrds(CartesianChartModel ccmReocrds) {
+        this.ccmReocrds = ccmReocrds;
+    }
 
     public String getDesignation() {
         return designation;
@@ -163,8 +198,198 @@ public class AnalysisController {
         ccmYearlyFillfilled.addSeries(csn);
         return ccmYearlyFillfilled;
     }
-    
-    
+
+    public void fillMonthlyAnalysis() {
+
+        barChartModel = new BarChartModel();
+
+        Calendar fc = Calendar.getInstance();
+        fc.setTime(fromDate);
+        Calendar tc = Calendar.getInstance();
+        tc.setTime(toDate);
+
+        ReadableInstant fr = new DateTime(fc.get(Calendar.YEAR), fc.get(Calendar.MONTH), 1, 0, 0);
+        ReadableInstant tr = new DateTime(tc.get(Calendar.YEAR), tc.get(Calendar.MONTH), 1, 0, 0);
+
+        int monthsDifference = Months.monthsBetween(fr, tr);
+        System.out.println("monthsDifference = " + monthsDifference);
+
+        Calendar beginingCalander = Calendar.getInstance();
+        beginingCalander.setTime(fromDate);
+        beginingCalander.set(Calendar.DATE, 1);
+        beginingCalander.set(Calendar.HOUR, 0);
+        beginingCalander.set(Calendar.MINUTE, 0);
+
+        Date beginningDate = beginingCalander.getTime();
+        System.out.println("beginningDate = " + beginningDate);
+
+        String jpql;
+        Map m = new HashMap();
+
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
+
+        ChartSeries reception = new ChartSeries("Reception");
+        ChartSeries courtesy = new ChartSeries("Courtesy");
+        ChartSeries listening = new ChartSeries("Listening");
+        ChartSeries reply = new ChartSeries("Reply");
+        ChartSeries response = new ChartSeries("Response");
+        ChartSeries efficacy = new ChartSeries("Efficacy");
+        ChartSeries facilities = new ChartSeries("Facilities");
+        ChartSeries overall = new ChartSeries("Overall");
+
+        for (int monthCount = 0; monthCount >= monthsDifference; monthCount++) {
+
+            long a1 = 0;
+            long a2 = 0;
+            long a3 = 0;
+            long a4 = 0;
+            long c1 = 0;
+            long c2 = 0;
+            long c3 = 0;
+            long c4 = 0;
+            long b1 = 0;
+            long b2 = 0;
+            long b3 = 0;
+            long b4 = 0;
+            long d1 = 0;
+            long d2 = 0;
+            long d3 = 0;
+            long d4 = 0;
+            long e1 = 0;
+            long e2 = 0;
+            long e3 = 0;
+            long e4 = 0;
+            long g1 = 0;
+            long g2 = 0;
+            long g3 = 0;
+            long g4 = 0;
+            long f1 = 0;
+            long f2 = 0;
+            long f3 = 0;
+            long f4 = 0;
+            long h1 = 0;
+            long h2 = 0;
+            long h3 = 0;
+            long h4 = 0;
+
+            Calendar startDate = Calendar.getInstance();
+            startDate = beginningDate.add(Calendar.MONTH, monthCount);
+            Calendar endDate = Calendar.getInstance();
+            endDate = startDate.add(Calendar.MONTH, 1);
+            endDate = endDate.add(Calendar.MONTH, -1);
+
+            Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+            Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+            Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+            Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
+
+            m = new HashMap();
+            m.put("fd", startDate.getTime());
+            m.put("td", endDate.getTime());
+
+            jpql = "Select q from Questioner where q.questionerDate between :fd and :td";
+
+            List<Questioner> qs = queFacade.findBySQL(jpql, m);
+
+            for (Questioner q : qs) {
+
+                if (q.getReception() == null) {
+                } else if (q.getReception().equals(excellent)) {
+                    a1++;
+                } else if (q.getReception().equals(veryGood)) {
+                    a2++;
+                } else if (q.getReception().equals(good)) {
+                    a3++;
+                } else if (q.getReception().equals(poor)) {
+                    a4++;
+                }
+
+                if (q.getCourtesy() == null) {
+                } else if (q.getCourtesy().equals(excellent)) {
+                    b1++;
+                } else if (q.getCourtesy().equals(veryGood)) {
+                    b2++;
+                } else if (q.getCourtesy().equals(good)) {
+                    b3++;
+                } else if (q.getCourtesy().equals(poor)) {
+                    b4++;
+                }
+
+                if (q.getListening() == null) {
+                } else if (q.getListening().equals(excellent)) {
+                    c1++;
+                } else if (q.getListening().equals(veryGood)) {
+                    c2++;
+                } else if (q.getListening().equals(good)) {
+                    c3++;
+                } else if (q.getListening().equals(poor)) {
+                    c4++;
+                }
+
+                if (q.getReply() == null) {
+                } else if (q.getReply().equals(excellent)) {
+                    d1++;
+                } else if (q.getReply().equals(veryGood)) {
+                    d2++;
+                } else if (q.getReply().equals(good)) {
+                    d3++;
+                } else if (q.getReply().equals(poor)) {
+                    d4++;
+                }
+
+                if (q.getResponse() == null) {
+                } else if (q.getResponse().equals(excellent)) {
+                    e1++;
+                } else if (q.getResponse().equals(veryGood)) {
+                    e2++;
+                } else if (q.getResponse().equals(good)) {
+                    e3++;
+                } else if (q.getResponse().equals(poor)) {
+                    e4++;
+                }
+
+                if (q.getEfficiency() == null) {
+                } else if (q.getEfficiency().equals(excellent)) {
+                    f1++;
+                } else if (q.getEfficiency().equals(veryGood)) {
+                    f2++;
+                } else if (q.getEfficiency().equals(good)) {
+                    f3++;
+                } else if (q.getEfficiency().equals(poor)) {
+                    f4++;
+                }
+
+                if (q.getFacilities() == null) {
+                } else if (q.getFacilities().equals(excellent)) {
+                    g1++;
+                } else if (q.getFacilities().equals(veryGood)) {
+                    g2++;
+                } else if (q.getFacilities().equals(good)) {
+                    g3++;
+                } else if (q.getFacilities().equals(poor)) {
+                    g4++;
+                }
+
+                if (q.getGeneral() == null) {
+                } else if (q.getGeneral().equals(excellent)) {
+                    h1++;
+                } else if (q.getGeneral().equals(veryGood)) {
+                    h2++;
+                } else if (q.getGeneral().equals(good)) {
+                    h3++;
+                } else if (q.getGeneral().equals(poor)) {
+                    h4++;
+                }
+
+            }
+
+        }
+
+    }
+
     public CartesianChartModel getCcmYearlyRepeatVisits() {
         List<Questioner> questioners;
         questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
@@ -261,7 +486,6 @@ public class AnalysisController {
         person = temPerson;
     }
 
-
     public void addAllPersons() {
         System.out.print("1");
         List<Questioner> questioners = getQueFacade().findAll();
@@ -357,10 +581,10 @@ public class AnalysisController {
         long h3 = 0;
         long h4 = 0;
 
-        Response excellent = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'");
-        Response veryGood = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'");
-        Response good = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'");
-        Response poor = getResFacade().findFirstBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'");
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
 
         for (Questioner q : questioners) {
 
@@ -540,10 +764,10 @@ public class AnalysisController {
         long h3 = 0;
         long h4 = 0;
 
-        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'විශිශ්ඨයි'").get(0);
-        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'ඉතා හොදයි'").get(0);
-        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'හොදයි'").get(0);
-        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'දුර්වලයි'").get(0);
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
 
         for (Questioner q : questioners) {
 
