@@ -70,14 +70,13 @@ public abstract class AbstractFacade<T> {
     public T findFirstBySQL(String temSQL) {
         TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
         List<T> lst = qry.getResultList();
-        if(lst!=null && !lst.isEmpty()){
+        if (lst != null && !lst.isEmpty()) {
             return lst.get(0);
-        }else{
+        } else {
             return null;
         }
     }
-   
-    
+
     public List<T> findBySQL(String temSQL, Map<String, Date> parameters) {
         TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
         Set s = parameters.entrySet();
@@ -96,6 +95,35 @@ public abstract class AbstractFacade<T> {
             System.out.println("Parameter " + pPara + "\tVal" + pVal);
         }
         return qry.getResultList();
+    }
+
+    public Long findLongBySQL(String temSQL, Map<String, Date> parameters) {
+        TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+
+            String pPara = (String) m.getKey();
+            Object pVal = m.getValue();
+            if (pVal instanceof Date) {
+                Date pValDate = (Date) m.getValue();
+                qry.setParameter(pPara, pValDate, TemporalType.DATE);
+            } else {
+                qry.setParameter(pPara, pVal);
+            }
+//            System.out.println("Parameter " + pPara + "\tVal" + pVal);
+        }
+        Long l;
+        try {
+            l = (Long) qry.getSingleResult();
+        } catch (Exception e) {
+            l = 0l;
+        }
+        if (l == null) {
+            l = 0l;
+        }
+        return l;
     }
 
 }

@@ -4,11 +4,13 @@
  */
 package bean;
 
+import Data.ResponseFor;
 import Data.YearCount;
 import entity.Person;
 import entity.Questioner;
 import entity.Response;
 import faces.util.JsfUtil;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,14 +20,19 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.ReadableInstant;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
 /**
@@ -33,7 +40,7 @@ import org.primefaces.model.chart.PieChartModel;
  * @author buddhika
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class AnalysisController {
 
     @EJB
@@ -58,7 +65,7 @@ public class AnalysisController {
     CartesianChartModel pcmYearlyPreviousVisits;
     CartesianChartModel ccmYearlyFillfilled;
 
-    CartesianChartModel ccmReocrds;
+    LineChartModel ccmReocrds;
 
     BarChartModel barChartModel;
 
@@ -68,6 +75,12 @@ public class AnalysisController {
     Date toDate;
 
     public Date getFromDate() {
+        if (fromDate == null) {
+            Calendar fd = Calendar.getInstance();
+            fd.set(Calendar.MONTH, 0);
+            fd.set(Calendar.DATE, 1);
+            fromDate = fd.getTime();
+        }
         return fromDate;
     }
 
@@ -76,6 +89,9 @@ public class AnalysisController {
     }
 
     public Date getToDate() {
+        if (toDate == null) {
+            toDate = new Date();
+        }
         return toDate;
     }
 
@@ -84,10 +100,13 @@ public class AnalysisController {
     }
 
     public CartesianChartModel getCcmReocrds() {
+        if (ccmReocrds == null) {
+            ccmReocrds = new LineChartModel();
+        }
         return ccmReocrds;
     }
 
-    public void setCcmReocrds(CartesianChartModel ccmReocrds) {
+    public void setCcmReocrds(LineChartModel ccmReocrds) {
         this.ccmReocrds = ccmReocrds;
     }
 
@@ -199,19 +218,39 @@ public class AnalysisController {
         return ccmYearlyFillfilled;
     }
 
-    public void fillMonthlyAnalysis() {
+    private LineChartModel lineModel2;
 
-        barChartModel = new BarChartModel();
+    private void createLineModels() {
+
+    }
+
+    public ResponseFor[] getResponsesFor() {
+        return ResponseFor.values();
+    }
+
+    ResponseFor[] selectedResponseFors;
+
+    public ResponseFor[] getSelectedResponseFors() {
+        return selectedResponseFors;
+    }
+
+    public void setSelectedResponseFors(ResponseFor[] selectedResponseFors) {
+        this.selectedResponseFors = selectedResponseFors;
+    }
+
+    public void fillMonthlyAnalysis() {
+        LineChartModel model = new LineChartModel();
 
         Calendar fc = Calendar.getInstance();
         fc.setTime(fromDate);
         Calendar tc = Calendar.getInstance();
         tc.setTime(toDate);
 
-        ReadableInstant fr = new DateTime(fc.get(Calendar.YEAR), fc.get(Calendar.MONTH), 1, 0, 0);
-        ReadableInstant tr = new DateTime(tc.get(Calendar.YEAR), tc.get(Calendar.MONTH), 1, 0, 0);
+        ReadableInstant fr = new DateTime(fc.get(Calendar.YEAR), fc.get(Calendar.MONTH) + 1, 1, 0, 0);
+        ReadableInstant tr = new DateTime(tc.get(Calendar.YEAR), tc.get(Calendar.MONTH) + 1, 1, 0, 0);
 
-        int monthsDifference = Months.monthsBetween(fr, tr);
+        int monthsDifference = Months.monthsBetween(fr, tr).getMonths();
+
         System.out.println("monthsDifference = " + monthsDifference);
 
         Calendar beginingCalander = Calendar.getInstance();
@@ -224,170 +263,178 @@ public class AnalysisController {
         System.out.println("beginningDate = " + beginningDate);
 
         String jpql;
-        Map m = new HashMap();
+        Map m;
 
         Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
         Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
         Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
         Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
 
-        ChartSeries reception = new ChartSeries("Reception");
-        ChartSeries courtesy = new ChartSeries("Courtesy");
-        ChartSeries listening = new ChartSeries("Listening");
-        ChartSeries reply = new ChartSeries("Reply");
-        ChartSeries response = new ChartSeries("Response");
-        ChartSeries efficacy = new ChartSeries("Efficacy");
-        ChartSeries facilities = new ChartSeries("Facilities");
-        ChartSeries overall = new ChartSeries("Overall");
+        List<Response> responses = new ArrayList<Response>();
 
-        for (int monthCount = 0; monthCount >= monthsDifference; monthCount++) {
+        Long maxVal = 10l;
+        responses.add(excellent);
+        responses.add(veryGood);
+        responses.add(good);
+        responses.add(poor);
+        System.out.println("responses = " + responses);
 
-            long a1 = 0;
-            long a2 = 0;
-            long a3 = 0;
-            long a4 = 0;
-            long c1 = 0;
-            long c2 = 0;
-            long c3 = 0;
-            long c4 = 0;
-            long b1 = 0;
-            long b2 = 0;
-            long b3 = 0;
-            long b4 = 0;
-            long d1 = 0;
-            long d2 = 0;
-            long d3 = 0;
-            long d4 = 0;
-            long e1 = 0;
-            long e2 = 0;
-            long e3 = 0;
-            long e4 = 0;
-            long g1 = 0;
-            long g2 = 0;
-            long g3 = 0;
-            long g4 = 0;
-            long f1 = 0;
-            long f2 = 0;
-            long f3 = 0;
-            long f4 = 0;
-            long h1 = 0;
-            long h2 = 0;
-            long h3 = 0;
-            long h4 = 0;
+        System.out.println("selectedResponseFors = " + selectedResponseFors);
 
-            Calendar startDate = Calendar.getInstance();
-            startDate = beginningDate.add(Calendar.MONTH, monthCount);
-            Calendar endDate = Calendar.getInstance();
-            endDate = startDate.add(Calendar.MONTH, 1);
-            endDate = endDate.add(Calendar.MONTH, -1);
+//        ResponseFor[] rfs = (ResponseFor[]) selectedResponseFors.toArray();
+        for (ResponseFor rf : selectedResponseFors) {
 
-            Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
-            Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
-            Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
-            Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
+            for (Response r : responses) {
+                ChartSeries chartSeries = new ChartSeries();
+                String t = r.getName() + " - " + rf.toString();
+                System.out.println("t = " + t);
+                chartSeries.setLabel(t);
 
-            m = new HashMap();
-            m.put("fd", startDate.getTime());
-            m.put("td", endDate.getTime());
+                for (int monthCount = 0; monthCount < monthsDifference; monthCount++) {
 
-            jpql = "Select q from Questioner where q.questionerDate between :fd and :td";
+                    Calendar startDate = Calendar.getInstance();
+                    startDate.setTime(beginningDate);
+                    startDate.add(Calendar.MONTH, monthCount);
+                    Calendar endDate = Calendar.getInstance();
+                    endDate.setTime(startDate.getTime());
+                    endDate.add(Calendar.MONTH, 1);
+                    endDate.add(Calendar.DATE, -1);
 
-            List<Questioner> qs = queFacade.findBySQL(jpql, m);
+                    m = new HashMap();
+                    m.put("fd", startDate.getTime());
+                    m.put("td", endDate.getTime());
+                    m.put("r", r);
 
-            for (Questioner q : qs) {
+                    jpql = "Select count(q) from Questioner q where q.questionerDate between :fd and :td and q." + rf + "=:r";
 
-                if (q.getReception() == null) {
-                } else if (q.getReception().equals(excellent)) {
-                    a1++;
-                } else if (q.getReception().equals(veryGood)) {
-                    a2++;
-                } else if (q.getReception().equals(good)) {
-                    a3++;
-                } else if (q.getReception().equals(poor)) {
-                    a4++;
+                    System.out.println("m = " + m);
+                    System.out.println("jpql = " + jpql);
+
+                    String period = new SimpleDateFormat("yyyy MMM").format(startDate.getTime());
+                    Long l = queFacade.findLongBySQL(jpql, m);
+                    if (l > maxVal) {
+                        maxVal = l;
+                    }
+                    chartSeries.set(period, l);
+                    System.out.println("period = " + period);
+
                 }
 
-                if (q.getCourtesy() == null) {
-                } else if (q.getCourtesy().equals(excellent)) {
-                    b1++;
-                } else if (q.getCourtesy().equals(veryGood)) {
-                    b2++;
-                } else if (q.getCourtesy().equals(good)) {
-                    b3++;
-                } else if (q.getCourtesy().equals(poor)) {
-                    b4++;
-                }
-
-                if (q.getListening() == null) {
-                } else if (q.getListening().equals(excellent)) {
-                    c1++;
-                } else if (q.getListening().equals(veryGood)) {
-                    c2++;
-                } else if (q.getListening().equals(good)) {
-                    c3++;
-                } else if (q.getListening().equals(poor)) {
-                    c4++;
-                }
-
-                if (q.getReply() == null) {
-                } else if (q.getReply().equals(excellent)) {
-                    d1++;
-                } else if (q.getReply().equals(veryGood)) {
-                    d2++;
-                } else if (q.getReply().equals(good)) {
-                    d3++;
-                } else if (q.getReply().equals(poor)) {
-                    d4++;
-                }
-
-                if (q.getResponse() == null) {
-                } else if (q.getResponse().equals(excellent)) {
-                    e1++;
-                } else if (q.getResponse().equals(veryGood)) {
-                    e2++;
-                } else if (q.getResponse().equals(good)) {
-                    e3++;
-                } else if (q.getResponse().equals(poor)) {
-                    e4++;
-                }
-
-                if (q.getEfficiency() == null) {
-                } else if (q.getEfficiency().equals(excellent)) {
-                    f1++;
-                } else if (q.getEfficiency().equals(veryGood)) {
-                    f2++;
-                } else if (q.getEfficiency().equals(good)) {
-                    f3++;
-                } else if (q.getEfficiency().equals(poor)) {
-                    f4++;
-                }
-
-                if (q.getFacilities() == null) {
-                } else if (q.getFacilities().equals(excellent)) {
-                    g1++;
-                } else if (q.getFacilities().equals(veryGood)) {
-                    g2++;
-                } else if (q.getFacilities().equals(good)) {
-                    g3++;
-                } else if (q.getFacilities().equals(poor)) {
-                    g4++;
-                }
-
-                if (q.getGeneral() == null) {
-                } else if (q.getGeneral().equals(excellent)) {
-                    h1++;
-                } else if (q.getGeneral().equals(veryGood)) {
-                    h2++;
-                } else if (q.getGeneral().equals(good)) {
-                    h3++;
-                } else if (q.getGeneral().equals(poor)) {
-                    h4++;
-                }
+                model.addSeries(chartSeries);
 
             }
-
         }
+        model.setTitle("Customer Satisfaction");
+        model.setLegendPosition("e");
+        model.setShowPointLabels(true);
+        model.getAxes().put(AxisType.X, new CategoryAxis("Periods"));
+        Axis yAxis = model.getAxis(AxisType.Y);
+        yAxis = model.getAxis(AxisType.Y);
+        yAxis.setLabel("Responses");
+        yAxis.setMin(0);
+        yAxis.setMax(maxVal+ maxVal*.2);
+        ccmReocrds = model;
+    }
 
+    public void fillQuartelyAnalysis() {
+        LineChartModel model = new LineChartModel();
+
+        Calendar fc = Calendar.getInstance();
+        fc.setTime(fromDate);
+        Calendar tc = Calendar.getInstance();
+        tc.setTime(toDate);
+
+        ReadableInstant fr = new DateTime(fc.get(Calendar.YEAR), fc.get(Calendar.MONTH) + 1, 1, 0, 0);
+        ReadableInstant tr = new DateTime(tc.get(Calendar.YEAR), tc.get(Calendar.MONTH) + 1, 1, 0, 0);
+
+        int monthsDifference = Months.monthsBetween(fr, tr).getMonths();
+
+        System.out.println("monthsDifference = " + monthsDifference);
+
+        Calendar beginingCalander = Calendar.getInstance();
+        beginingCalander.setTime(fromDate);
+        beginingCalander.set(Calendar.DATE, 1);
+        beginingCalander.set(Calendar.HOUR, 0);
+        beginingCalander.set(Calendar.MINUTE, 0);
+
+        Date beginningDate = beginingCalander.getTime();
+        System.out.println("beginningDate = " + beginningDate);
+
+        String jpql;
+        Map m;
+
+        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
+        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
+        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
+        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
+
+        List<Response> responses = new ArrayList<Response>();
+
+        Long maxVal = 10l;
+        responses.add(excellent);
+        responses.add(veryGood);
+        responses.add(good);
+        responses.add(poor);
+        System.out.println("responses = " + responses);
+
+        System.out.println("selectedResponseFors = " + selectedResponseFors);
+
+//        ResponseFor[] rfs = (ResponseFor[]) selectedResponseFors.toArray();
+        for (ResponseFor rf : selectedResponseFors) {
+
+            for (Response r : responses) {
+                ChartSeries chartSeries = new ChartSeries();
+                String t = r.getName() + " - " + rf.toString();
+                System.out.println("t = " + t);
+                chartSeries.setLabel(t);
+
+                for (int monthCount = 0; monthCount < monthsDifference; monthCount=monthCount+3) {
+
+                    Calendar startDate = Calendar.getInstance();
+                    startDate.setTime(beginningDate);
+                    startDate.add(Calendar.MONTH, monthCount);
+                    Calendar endDate = Calendar.getInstance();
+                    endDate.setTime(startDate.getTime());
+                    endDate.add(Calendar.MONTH, 3);
+                    endDate.add(Calendar.DATE, -1);
+
+                    m = new HashMap();
+                    m.put("fd", startDate.getTime());
+                    m.put("td", endDate.getTime());
+                    m.put("r", r);
+
+                    jpql = "Select count(q) from Questioner q where q.questionerDate between :fd and :td and q." + rf + "=:r";
+
+                    System.out.println("m = " + m);
+                    System.out.println("jpql = " + jpql);
+
+                    int q = (startDate.get(Calendar.MONTH)/3)+1;
+                    String period = new SimpleDateFormat("yyyy").format(startDate.getTime()) + " - " + q;
+                    
+                    
+                    Long l = queFacade.findLongBySQL(jpql, m);
+                    if (l > maxVal) {
+                        maxVal = l;
+                    }
+                    chartSeries.set(period, l);
+                    System.out.println("period = " + period);
+
+                }
+
+                model.addSeries(chartSeries);
+
+            }
+        }
+        model.setTitle("Customer Satisfaction");
+        model.setLegendPosition("e");
+        model.setShowPointLabels(true);
+        model.getAxes().put(AxisType.X, new CategoryAxis("Periods"));
+        Axis yAxis = model.getAxis(AxisType.Y);
+        yAxis = model.getAxis(AxisType.Y);
+        yAxis.setLabel("Responses");
+        yAxis.setMin(0);
+        yAxis.setMax(maxVal + maxVal*.2 );
+        ccmReocrds = model;
     }
 
     public CartesianChartModel getCcmYearlyRepeatVisits() {
