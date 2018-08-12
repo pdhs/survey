@@ -85,6 +85,11 @@ public class QuestionerController implements Serializable {
         return "Create";
     }
 
+    public String saveAndStartNew(){
+        create();
+        return prepareCreate();
+    }
+    
     public String create() {
         try {
             getFacade().create(current);

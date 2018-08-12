@@ -22,6 +22,7 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private int orderNo;
     String name;
     String designation;
 
@@ -76,4 +77,14 @@ public class Person implements Serializable {
         return "entity.Person[ id=" + id + " ]";
     }
 
+    public int getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(int orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    
+    
 }

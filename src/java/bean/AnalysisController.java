@@ -50,6 +50,7 @@ public class AnalysisController {
     @EJB
     PersonFacade perFacade;
     //
+    private int personOrderNo;
     String personName;
     //
     Person person;
@@ -525,6 +526,7 @@ public class AnalysisController {
             return;
         }
         Person temPerson = new Person();
+        temPerson.setOrderNo(personOrderNo);
         temPerson.setName(personName);
         temPerson.setDesignation(designation);
         getPerFacade().create(temPerson);
@@ -1113,4 +1115,16 @@ public class AnalysisController {
     public void setResFacade(ResponseFacade resFacade) {
         this.resFacade = resFacade;
     }
+
+    public int getPersonOrderNo() {
+        return personOrderNo;
+    }
+
+    public void setPersonOrderNo(int personOrderNo) {
+        this.personOrderNo = personOrderNo;
+    }
+    
+    
+    
+    
 }

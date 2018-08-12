@@ -16,20 +16,36 @@
             <h:form>
                 <p:panel header="List of Persons" >
                     <p:focus id="detailFocus" context="gpDetail" />
-                    <p:selectOneListbox  id="lstSelect"  value="#{personController.current}" style="min-width: 223px">
-                        <f:selectItems value="#{personController.listItems}" var="myItem" itemValue="#{myItem}" itemLabel="#{myItem.name}" ></f:selectItems>
-                    </p:selectOneListbox>
-                    <p:commandButton ajax="false" value="Delete" action="#{personController.destroy()}" ></p:commandButton>
+                    
+                    <p:dataTable value="#{personController.listItems}" var="p" rowIndexVar="#{p.id}" >
+                        <p:column headerText="Order No" sortBy="#{p.orderNo}" >
+                            <p:inputText value="#{p.orderNo}" ></p:inputText>
+                        </p:column>
+                        <p:column headerText="Name" sortBy="#{p.name}" >
+                            <p:inputText value="#{p.name}" ></p:inputText>
+                        </p:column>
+                        <p:column headerText="Designation" sortBy="#{p.designation}" >
+                            <p:inputText value="#{p.designation}" ></p:inputText>
+                        </p:column>
+                        <p:column headerText="Remove" >
+                            <p:commandButton value="Remove" action="#{personController.removePerson()}" ajax="false" >
+                                <f:setPropertyActionListener value="#{p}" target="#{personController.current}" ></f:setPropertyActionListener>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton ajax="false" value="Update" action="#{personController.updateAll}" ></p:commandButton>
                     <p:commandButton  ajax="false"  value="Refresh" action="#{personController.fillItems()}" ></p:commandButton>
                 </p:panel>
                 
                 <p:panel header="Add New" >
                     <p:panelGrid columns="2" id="gpDetail">
+                        <h:outputLabel value="No" ></h:outputLabel>
+                        <h:inputText value="#{analysisController.personOrderNo}"/>
                         <h:outputLabel value="Name" ></h:outputLabel>
                         <h:inputText value="#{analysisController.personName}"/>
                         <h:outputLabel value="Designation" ></h:outputLabel>
                         <h:inputText value="#{analysisController.designation}"/>
-                        <h:commandButton action="#{analysisController.addPerson}" value="Add Person"/>
+                        <p:commandButton ajax="false" action="#{analysisController.addPerson}" value="Add Person"/>
                     </p:panelGrid>
                 </p:panel>
 

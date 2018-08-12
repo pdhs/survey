@@ -16,7 +16,7 @@
             </h:panelGroup>
             <h:form>
 
-                <table style="width: 98% ;margin: auto; border: 1px" >
+                <table style="width: 98% ;margin: auto; border: 1px solid;  padding: 10px;  box-shadow: 5px 10px #888888;" >
                     <tr>
                         <td>
                             දකුණු පළාත් සෞඛ්‍ය සේවා අධ්‍යක්ෂක කාර්යාලය
@@ -51,13 +51,13 @@
                         </td>
                         <td>
                             ජා. හැ . අ.
-                            <h:inputText id="nic" value="#{questionerController.selected.nic}" title="NIC" />
+                            <p:inputText id="nic" value="#{questionerController.selected.nic}" title="NIC" />
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3">
 
-                            <table border="1" >
+                            <table border="1" style="width: 95%; margin: auto; " >
                                 <tr>
                                     <td>
                                         සේවා අවශ්‍යතාවය 
@@ -77,7 +77,7 @@
                                 </tr>
                                 <tr style="vertical-align: top;">
                                     <td>
-                                        <h:inputTextarea rows="4" cols="30" id="requirement" value="#{questionerController.selected.requirement}" title="#{bundle.CreateQuestionerTitle_requirement}" />
+                                        <p:inputTextarea rows="4" cols="30" id="requirement" value="#{questionerController.selected.requirement}" title="#{bundle.CreateQuestionerTitle_requirement}" />
                                     </td>
                                     <td  style="vertical-align: top;">
                                         <p:selectOneMenu value="#{questionerController.selected.person}" var="pe" >
@@ -98,7 +98,9 @@
                                         <p:inputText id="timeTakenHrs" placeholder="පැය" value="#{questionerController.selected.timeTakenHrs}" title="#{bundle.CreateQuestionerTitle_timeTakenHrs}" />
                                         <p:inputText id="timeTakenMin" placeholder="මිනිත්තු" value="#{questionerController.selected.timeTakenMin}" title="#{bundle.CreateQuestionerTitle_timeTakenMin}" />
                                     </td>
-                                    <td></td>
+                                    <td  style="vertical-align: top; text-align: center;">
+                                        <h:inputText id="noOfVisits" value="#{questionerController.selected.noOfVisits}" title="#{bundle.CreateQuestionerTitle_noOfVisits}" />
+                                    </td>
                                 </tr>
                             </table>
 
@@ -107,96 +109,133 @@
                         </td>
                     </tr>
 
+                    <tr>
+                        <td colspan="2" >
+
+                            <table border="1" style="width: 95%; margin: auto;"  >
+                                <tr>
+                                    <td>
+                                        1
+                                    </td>
+                                    <td>
+                                        පිළිගනිම හා අචරශිලී බව 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.reception}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        2
+                                    </td>
+                                    <td>
+                                        ඇහුම්කන්දීම 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.listening}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        3
+                                    </td>
+                                    <td>
+                                        පිළිතුරු දීම 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.reply}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        4
+                                    </td>
+                                    <td>
+                                        ප්‍රතිචරත්මකබව 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.response}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        5
+                                    </td>
+                                    <td>
+                                        කාර්යක්ෂමබව 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.efficiency}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        6
+                                    </td>
+                                    <td>
+                                        කාර්‍යය ඉටුවනතෙක් රැදී සිටීමට තිබූ පහසුකම් 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.facilities}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        7
+                                    </td>
+                                    <td>
+                                        සිදුවන සේවාව පිළිබද සමස්ථ ඇගයීම 
+                                    </td>
+                                    <td>
+                                        <p:selectOneButton  value="#{questionerController.selected.general}"  >
+                                            <f:selectItems value="#{responseController.items}" />
+                                        </p:selectOneButton>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                        <td>
+                            <table style="width: 95%; margin: auto;" >
+                                <tr>
+                                    <td colspan="2">
+                                        ආයතනයේ දියුණුවට ඔබගේ අදහස් සහ යෝජනා 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <p:inputTextarea rows="4" cols="30" id="suggestions" value="#{questionerController.selected.suggestions}" title="#{bundle.CreateQuestionerTitle_suggestions}" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p:commandButton ajax="false" value="Save &amp; Add New" action="#{questionerController.saveAndStartNew}" ></p:commandButton>
+                                    </td>
+                                    <td>
+                                        <p:commandButton ajax="false" value="View Entered Data" action="#{questionerController.saveAndStartNew}" ></p:commandButton>
+                                    </td>
+                                </tr>
+                            </table>
+
+
+                        </td>
+                    </tr>
                 </table>
 
 
-                <h:panelGrid columns="2">
 
-
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_previousVisits}" for="previousVisits" />
-                    <p:selectBooleanCheckbox   id="previousVisits" value="#{questionerController.selected.previousVisits}" />
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_noOfVisits}" for="noOfVisits" />
-                    <h:inputText id="noOfVisits" value="#{questionerController.selected.noOfVisits}" title="#{bundle.CreateQuestionerTitle_noOfVisits}" />
-
-
-
-
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_officerPost}" for="officerPost" />
-                    <h:inputText disabled="true" id="officerPost" value="#{questionerController.selected.person.designation}" title="#{bundle.CreateQuestionerTitle_officerPost}" />
-
-
-
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_reception}" for="reception" />
-                    <h:selectOneMenu id="reception" value="#{questionerController.selected.reception}" title="#{bundle.CreateQuestionerTitle_reception}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
-                    </h:selectOneMenu>
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_courtesy}" for="courtesy" />
-                    <h:selectOneMenu id="courtesy" value="#{questionerController.selected.courtesy}" title="#{bundle.CreateQuestionerTitle_courtesy}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
-                    </h:selectOneMenu>
-
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_listening}" for="listening" />
-                    <h:selectOneMenu id="listening" value="#{questionerController.selected.listening}" title="#{bundle.CreateQuestionerTitle_listening}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
-                    </h:selectOneMenu>
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_reply}" for="reply" />
-                    <h:selectOneMenu id="reply" value="#{questionerController.selected.reply}" title="#{bundle.CreateQuestionerTitle_reply}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"  />
-                    </h:selectOneMenu>
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_response}" for="response" />
-                    <h:selectOneMenu id="response" value="#{questionerController.selected.response}" title="#{bundle.CreateQuestionerTitle_response}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"  />
-                    </h:selectOneMenu>
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_efficiency}" for="efficiency" />
-                    <h:selectOneMenu id="efficiency" value="#{questionerController.selected.efficiency}" title="#{bundle.CreateQuestionerTitle_efficiency}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"/>
-                    </h:selectOneMenu>
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_facilities}" for="facilities" />
-                    <h:selectOneMenu id="facilities" value="#{questionerController.selected.facilities}" title="#{bundle.CreateQuestionerTitle_facilities}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}" />
-                    </h:selectOneMenu>
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_general}" for="general" />
-                    <h:selectOneMenu id="general" value="#{questionerController.selected.general}" title="#{bundle.CreateQuestionerTitle_general}" >
-                        <f:selectItems value="#{responseController.itemsAvailableSelectOne}"/>
-                    </h:selectOneMenu>
-
-
-
-
-
-
-
-
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_suggestions}" for="suggestions" />
-                    <h:inputTextarea rows="4" cols="30" id="suggestions" value="#{questionerController.selected.suggestions}" title="#{bundle.CreateQuestionerTitle_suggestions}" />
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_name}" for="name" />
-                    <h:inputText id="name" value="#{questionerController.selected.name}" title="#{bundle.CreateQuestionerTitle_name}" />
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_address}" for="address" />
-                    <h:inputTextarea rows="4" cols="30" id="address" value="#{questionerController.selected.address}" title="#{bundle.CreateQuestionerTitle_address}" />
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_telephone}" for="telephone" />
-                    <h:inputText id="telephone" value="#{questionerController.selected.telephone}" title="#{bundle.CreateQuestionerTitle_telephone}" />
-
-
-                </h:panelGrid>
-                <br />
-                <h:commandLink action="#{questionerController.create}" value="#{bundle.CreateQuestionerSaveLink}" />
-                <br />
-                <br />
-                <h:commandLink action="#{questionerController.prepareList}" value="#{bundle.CreateQuestionerShowAllLink}" immediate="true"/>
-                <br />
-                <br />
-                <h:commandLink value="#{bundle.CreateQuestionerIndexLink}" action="/index" immediate="true" />
             </h:form>
         </ui:define>
     </ui:composition>

@@ -51,9 +51,28 @@ public class PersonController implements Serializable {
         this.listItems = listItems;
     }
 
+    public void updateAll() {
+        for (Person p : listItems) {
+            getFacade().edit(p);
+        }
+    }
+
+    public void removePerson() {
+        if (current == null) {
+            JsfUtil.addErrorMessage("Select to remove");
+            return;
+        }
+        try {
+            getFacade().remove(current);
+            JsfUtil.addSuccessMessage("Removed");
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage("Failed");
+        }
+    }
+
     public void fillItems() {
         System.out.println("filling items");
-        listItems = getFacade().findBySQL("Select p From Person p");
+        listItems = getFacade().findBySQL("Select p From Person p order by p.orderNo");
     }
 
     public PersonController() {
@@ -121,7 +140,6 @@ public class PersonController implements Serializable {
         return "List";
     }
 
-
     public String prepareCreate() {
         current = new Person();
         selectedItemIndex = -1;
@@ -139,8 +157,6 @@ public class PersonController implements Serializable {
         }
     }
 
-   
-
     public String update() {
         try {
             getFacade().edit(current);
@@ -151,8 +167,6 @@ public class PersonController implements Serializable {
             return null;
         }
     }
-
-    
 
     public String destroyAndView() {
         performDestroy();
@@ -229,8 +243,7 @@ public class PersonController implements Serializable {
         return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
     }
 
-    
-        @FacesConverter(forClass = Person.class)
+    @FacesConverter(forClass = Person.class)
     public static class PersonControllerConverter implements Converter {
 
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
@@ -266,7 +279,7 @@ public class PersonController implements Serializable {
             }
         }
     }
-    
+
     @FacesConverter("personConverter")
     public static class PersonConverter implements Converter {
 

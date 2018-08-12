@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pou="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -14,13 +14,11 @@
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <h:commandLink action="/questioner/List" value="Show All Questioner Items"/>
-            </h:form>
-            <h:form>
-                <h:commandLink action="/questioner/List" value="Add New"/>
-            </h:form>
-            <h:form>
-                <h:commandLink action="analysis" value="Analysis"/>
+                <p:panelGrid columns="3" >
+                    <p:commandButton ajax="false" action="/questioner/List" value="Show All Questioner Items" ></p:commandButton>
+                    <p:commandButton ajax="false"  action="/questioner/Create" value="Add New"/>
+                    <p:commandButton  ajax="false" action="analysis" value="Analysis"/>
+                </p:panelGrid>
             </h:form>
         </ui:define>
     </ui:composition>

@@ -28,7 +28,7 @@ import javax.faces.model.SelectItem;
 public class ResponseController implements Serializable {
 
     private Response current;
-    private DataModel items = null;
+    private List<Response> items = null;
     @EJB
     private bean.ResponseFacade ejbFacade;
     @EJB
@@ -99,8 +99,7 @@ public class ResponseController implements Serializable {
     }
 
     public String prepareView() {
-        current = (Response) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+       
         return "View";
     }
 
@@ -122,8 +121,7 @@ public class ResponseController implements Serializable {
     }
 
     public String prepareEdit() {
-        current = (Response) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+       
         return "Edit";
     }
 
@@ -139,8 +137,7 @@ public class ResponseController implements Serializable {
     }
 
     public String destroy() {
-        current = (Response) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
+       
         performDestroy();
         recreatePagination();
         recreateModel();
@@ -184,9 +181,9 @@ public class ResponseController implements Serializable {
         }
     }
 
-    public DataModel getItems() {
+    public List<Response> getItems() {
         if (items == null) {
-            items = getPagination().createPageDataModel();
+            items = getFacade().findAll();
         }
         return items;
     }
