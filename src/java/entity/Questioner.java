@@ -28,6 +28,7 @@ public class Questioner implements Serializable {
     Boolean requirementSatisfied;
     Double TimeTakenHrs;
     Double TimeTakenMin;
+    private String nic;
     Boolean previousVisits;
     Integer noOfVisits;
     String officerName;
@@ -179,6 +180,9 @@ public class Questioner implements Serializable {
     }
 
     public Date getQuestionerDate() {
+        if(questionerDate==null){
+            questionerDate = new Date();
+        }
         return questionerDate;
     }
 
@@ -187,6 +191,9 @@ public class Questioner implements Serializable {
     }
 
     public Date getQuestionerTime() {
+        if(questionerTime==null){
+            questionerTime = new Date();
+        }
         return questionerTime;
     }
 
@@ -273,6 +280,18 @@ public class Questioner implements Serializable {
     @Override
     public String toString() {
         return "entity.Questioner[ id=" + id + " ]";
+
     }
+
+    public String getNic() {
+        return nic;
+    }
+
+    public void setNic(String nic) {
+        this.nic = nic;
+    }
+    
+    
+    
 
 }

@@ -25,7 +25,7 @@ import javax.faces.model.SelectItem;
 public class PersonController implements Serializable {
 
     private Person current;
-    private DataModel items = null;
+    private List<Person> items = null;
     @EJB
     private bean.PersonFacade ejbFacade;
     private PaginationHelper pagination;
@@ -121,11 +121,6 @@ public class PersonController implements Serializable {
         return "List";
     }
 
-    public String prepareView() {
-        current = (Person) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "View";
-    }
 
     public String prepareCreate() {
         current = new Person();
@@ -144,11 +139,7 @@ public class PersonController implements Serializable {
         }
     }
 
-    public String prepareEdit() {
-        current = (Person) getItems().getRowData();
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        return "Edit";
-    }
+   
 
     public String update() {
         try {
@@ -161,16 +152,7 @@ public class PersonController implements Serializable {
         }
     }
 
-    public String destroy() {
-        System.out.println("deleting");
-        current = (Person) getItems().getRowData();
-        System.out.println("current = " + current);
-        selectedItemIndex = pagination.getPageFirstItem() + getItems().getRowIndex();
-        performDestroy();
-        recreatePagination();
-        recreateModel();
-        return "List";
-    }
+    
 
     public String destroyAndView() {
         performDestroy();
@@ -212,9 +194,9 @@ public class PersonController implements Serializable {
         }
     }
 
-    public DataModel getItems() {
+    public List<Person> getItems() {
         if (items == null) {
-            items = getPagination().createPageDataModel();
+            items = getFacade().findAll();
         }
         return items;
     }

@@ -15,30 +15,104 @@
                 <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
             </h:panelGroup>
             <h:form>
-                
-                
-                
-                
+
+                <table style="width: 98% ;margin: auto; border: 1px" >
+                    <tr>
+                        <td>
+                            දකුණු පළාත් සෞඛ්‍ය සේවා අධ්‍යක්ෂක කාර්යාලය
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            SPH/QMU/FOR/02
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center;" >
+                            <h1>
+                                සේවාලාභී ප්‍රතිචාර ඇගයීම් පත්‍රය 
+                            </h1>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            දිනය 
+                            <p:calendar id="calDate" 
+                                        value="#{questionerController.selected.questionerDate}" 
+                                        pattern="dd/MMMM/yyyy">
+                            </p:calendar>
+                        </td>
+                        <td>
+                            වේලාව 
+                            <p:calendar pattern="HH:mm" timeOnly="true" value="#{questionerController.selected.questionerTime}" title="#{bundle.CreateQuestionerTitle_questionerTime}" >
+                            </p:calendar>
+                        </td>
+                        <td>
+                            ජා. හැ . අ.
+                            <h:inputText id="nic" value="#{questionerController.selected.nic}" title="NIC" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+
+                            <table border="1" >
+                                <tr>
+                                    <td>
+                                        සේවා අවශ්‍යතාවය 
+                                    </td>
+                                    <td>
+                                        හමුවූ නිළධාරියාගේ නම සහ තනතුර 
+                                    </td>
+                                    <td>
+                                        එය ඉටු වුයේද?
+                                    </td>
+                                    <td>
+                                        ඔවු නම් ඊට ගතවූ කාලය 
+                                    </td>
+                                    <td>
+                                        පැමිණි වාර ගණන 
+                                    </td>
+                                </tr>
+                                <tr style="vertical-align: top;">
+                                    <td>
+                                        <h:inputTextarea rows="4" cols="30" id="requirement" value="#{questionerController.selected.requirement}" title="#{bundle.CreateQuestionerTitle_requirement}" />
+                                    </td>
+                                    <td  style="vertical-align: top;">
+                                        <p:selectOneMenu value="#{questionerController.selected.person}" var="pe" >
+                                            <f:selectItem itemLabel="තෝරන්න" ></f:selectItem>
+                                            <f:selectItems value="#{personController.items}" var="p" itemLabel="#{p.name}" itemValue="#{p}" ></f:selectItems>
+                                            <p:column headerText="නම" >
+                                                <p:outputLabel value="#{pe.name}" ></p:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="තනතුර " >
+                                                <p:outputLabel value="#{pe.designation}" ></p:outputLabel>
+                                            </p:column>
+                                        </p:selectOneMenu>
+                                    </td>
+                                    <td  style="vertical-align: top; text-align: center;">
+                                        <p:selectBooleanButton  id="requirementSatisfied" offLabel="නැත" onLabel="ඔවු" value="#{questionerController.selected.requirementSatisfied}" ></p:selectBooleanButton>
+                                    </td>
+                                    <td  style="vertical-align: top; text-align: center;">
+                                        <p:inputText id="timeTakenHrs" placeholder="පැය" value="#{questionerController.selected.timeTakenHrs}" title="#{bundle.CreateQuestionerTitle_timeTakenHrs}" />
+                                        <p:inputText id="timeTakenMin" placeholder="මිනිත්තු" value="#{questionerController.selected.timeTakenMin}" title="#{bundle.CreateQuestionerTitle_timeTakenMin}" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+
+
+
+                        </td>
+                    </tr>
+
+                </table>
+
+
                 <h:panelGrid columns="2">
-                    <h:outputLabel value="#{bundle.CreateQuestionerTitle_questionerDate}"/>
-                    <p:calendar id="calDate" 
-                                value="#{questionerController.selected.questionerDate}" 
-                                pattern="dd/MMMM/yyyy">
-                    </p:calendar>
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_questionerTime}" for="questionerTime" />
-                    <p:calendar pattern="HH:mm" timeOnly="true" value="#{questionerController.selected.questionerTime}" title="#{bundle.CreateQuestionerTitle_questionerTime}" >
-                    </p:calendar>
 
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_requirement}" for="requirement" />
-                    <h:inputTextarea rows="4" cols="30" id="requirement" value="#{questionerController.selected.requirement}" title="#{bundle.CreateQuestionerTitle_requirement}" />
 
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_requirementSatisfied}" for="requirementSatisfied" />
-                    <p:selectBooleanCheckbox  id="requirementSatisfied" value="#{questionerController.selected.requirementSatisfied}" ></p:selectBooleanCheckbox>
-
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_timeTakenHrs}" for="timeTakenHrs" />
-                    <h:inputText id="timeTakenHrs" value="#{questionerController.selected.timeTakenHrs}" title="#{bundle.CreateQuestionerTitle_timeTakenHrs}" />
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_timeTakenMin}" for="timeTakenMin" />
-                    <h:inputText id="timeTakenMin" value="#{questionerController.selected.timeTakenMin}" title="#{bundle.CreateQuestionerTitle_timeTakenMin}" />
 
                     <h:outputLabel value="#{bundle.CreateQuestionerLabel_previousVisits}" for="previousVisits" />
                     <p:selectBooleanCheckbox   id="previousVisits" value="#{questionerController.selected.previousVisits}" />
@@ -46,14 +120,7 @@
                     <h:outputLabel value="#{bundle.CreateQuestionerLabel_noOfVisits}" for="noOfVisits" />
                     <h:inputText id="noOfVisits" value="#{questionerController.selected.noOfVisits}" title="#{bundle.CreateQuestionerTitle_noOfVisits}" />
 
-                    <h:outputLabel value="#{bundle.CreateQuestionerLabel_officerName}" for="officerName" />
-                    <p:autoComplete
-                        forceSelection="true"                                 
-                        value="#{questionerController.selected.person}" 
-                        completeMethod="#{personController.completePersons}"
-                        var="p" itemLabel="#{p.name}" itemValue="#{p}" converter="personConverter" >
-                        <f:ajax event="itemSelect" execute="@this" render="officerPost" ></f:ajax>
-                    </p:autoComplete>
+
 
 
 
