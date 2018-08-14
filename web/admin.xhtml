@@ -18,17 +18,17 @@
                     <p:focus id="detailFocus" context="gpDetail" />
                     
                     <p:dataTable value="#{personController.listItems}" var="p" rowIndexVar="#{p.id}" >
-                        <p:column headerText="Order No" sortBy="#{p.orderNo}" >
-                            <p:inputText value="#{p.orderNo}" ></p:inputText>
+                        <p:column headerText="Order No" sortBy="#{p.orderNo}" width="35px;" >
+                            <p:inputText value="#{p.orderNo}" style="width: 30px;" ></p:inputText>
                         </p:column>
                         <p:column headerText="Name" sortBy="#{p.name}" >
-                            <p:inputText value="#{p.name}" ></p:inputText>
+                            <p:inputText value="#{p.name}"  style="width: 98%; margin: auto;" ></p:inputText>
                         </p:column>
                         <p:column headerText="Designation" sortBy="#{p.designation}" >
-                            <p:inputText value="#{p.designation}" ></p:inputText>
+                            <p:inputText value="#{p.designation}"   style="width: 98%; margin: auto;" ></p:inputText>
                         </p:column>
-                        <p:column headerText="Remove" >
-                            <p:commandButton value="Remove" action="#{personController.removePerson()}" ajax="false" >
+                        <p:column headerText="Remove" style="width: 25px;" >
+                            <p:commandButton value="X" action="#{personController.removePerson()}" ajax="false" style="width: 20px;" >
                                 <f:setPropertyActionListener value="#{p}" target="#{personController.current}" ></f:setPropertyActionListener>
                             </p:commandButton>
                         </p:column>

@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pou="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -18,15 +18,13 @@
                 <tr>
                     <td>
                         <h2>Requirement Full Filled - Yearly Analysis</h2>
-                        <pou:barChart id="basic" value="#{analysisController.ccmYearlyFillfilled}" legendPosition="ne"
-                                      title="Requirement Full Filled - Yearly Analysis" style="height:300px"/>
+                        <p:chart type="bar" id="basic" model="#{analysisController.ccmYearlyFillfilled}"style="height:300px"/>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <h2>Needed Repeated Visits - Yearly Analysis</h2>
-                        <pou:barChart id="basic" value="#{analysisController.getPcmYearlyPreviousVisits}" legendPosition="ne"
-                                      title="Needed Repeated Visits - Yearly Analysis" style="height:300px"/>
+                        <p:chart type="bar" id="basic" model="#{analysisController.getPcmYearlyPreviousVisits}"  style="height:300px"/>
                     </td>
                 </tr>
                 

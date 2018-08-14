@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pou="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -14,8 +14,7 @@
         </ui:define>
         <ui:define name="body">
             <h2>Return Visits - Yearly Analysis</h2>
-            <pou:barChart id="basic" value="#{analysisController.pcmYearlyPreviousVisits}" legendPosition="ne"
-                          title="Return Visits - Yearly Analysis" style="height:300px"/>
+            <p:chart type="bar" id="basic" model="#{analysisController.pcmYearlyPreviousVisits}"  style="height:300px"/>
         </ui:define>
     </ui:composition>
 

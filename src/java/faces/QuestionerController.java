@@ -6,7 +6,11 @@ import faces.util.PaginationHelper;
 import bean.QuestionerFacade;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -28,6 +32,27 @@ public class QuestionerController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
+    Date fromDate;
+    Date toDate;
+    
+    
+    List<Questioner> searchItems = null;
+    
+    
+    public String toSearchItems(){
+        searchItems = null;
+        return "/questioner/List";
+    }
+    
+    public void listItems(){
+        String j = "Select q from Questioner q where q.questionerDate between :fd and :td";
+        Map m = new HashMap();
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        searchItems = getFacade().findBySQL(j, m);
+    }
+    
+    
     public Questioner getCurrent() {
         return current;
     }
@@ -221,4 +246,58 @@ public class QuestionerController implements Serializable {
             }
         }
     }
+
+    public PaginationHelper getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(PaginationHelper pagination) {
+        this.pagination = pagination;
+    }
+
+    public int getSelectedItemIndex() {
+        return selectedItemIndex;
+    }
+
+    public void setSelectedItemIndex(int selectedItemIndex) {
+        this.selectedItemIndex = selectedItemIndex;
+    }
+
+    public Date getFromDate() {
+        if(fromDate==null){
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.MONTH, 0);
+            c.set(Calendar.DAY_OF_MONTH, 1);
+            fromDate = c.getTime();
+        }
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        if(toDate==null){
+            toDate = new Date();
+        }
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public List<Questioner> getSearchItems() {
+        return searchItems;
+    }
+
+    public void setSearchItems(List<Questioner> searchItems) {
+        this.searchItems = searchItems;
+    }
+
+
+    
+
+
 }

@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:pou="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -14,8 +14,7 @@
         </ui:define>
         <ui:define name="body">
             <h2>Full Filled</h2>
-            <pou:pieChart id="sample" value="#{analysisController.pcmFullfilled}" legendPosition="w"
-                          title="Fullfilled Pie Chart" style="width:400px;height:300px"  showDataLabels="true"/>
+            <p:chart type="pie" id="sample" model="#{analysisController.pcmFullfilled}" style="width:400px;height:300px" />
 
             <h:panelGrid columns="2" >
                 <h:outputLabel value="Yes" />

@@ -5,6 +5,7 @@
 package bean;
 
 import Data.ResponseFor;
+import Data.ResponseSummery;
 import Data.YearCount;
 import entity.Person;
 import entity.Questioner;
@@ -29,7 +30,7 @@ import org.joda.time.ReadableInstant;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
-import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
@@ -59,21 +60,246 @@ public class AnalysisController {
     //
     PieChartModel pcmFullfilled;
     PieChartModel pcmPreviousVisits;
-    CartesianChartModel ccmDuration;
-    CartesianChartModel ccmReturnCount;
-    CartesianChartModel ccmResponse;
-    CartesianChartModel ccmPersonFullfill;
-    CartesianChartModel pcmYearlyPreviousVisits;
-    CartesianChartModel ccmYearlyFillfilled;
+    BarChartModel ccmDuration;
+    BarChartModel ccmReturnCount;
+    BarChartModel ccmResponse;
+    BarChartModel ccmPersonFullfill;
+    BarChartModel pcmYearlyPreviousVisits;
+    BarChartModel ccmYearlyFillfilled;
+
+    private BarChartModel bcReception;
+    private BarChartModel bcListening;
+    private BarChartModel bcReply;
+    private BarChartModel bcResponse;
+    private BarChartModel bcEfficiency;
+    private BarChartModel bcFacilities;
+    private BarChartModel bcGeneral;
+
+    private ResponseSummery reception;
+    private ResponseSummery listening;
+    private ResponseSummery response;
+    private ResponseSummery reply;
+    private ResponseSummery efficiency;
+    private ResponseSummery facilities;
+    private ResponseSummery general;
 
     LineChartModel ccmReocrds;
 
-    BarChartModel barChartModel;
+    private BarChartModel barChartModel;
 
     String designation;
 
     Date fromDate;
     Date toDate;
+
+    public String toCreatePeriodAnalysisOfAllResponses() {
+        resetAllModelsForPeriosAnalysis();
+        return "/period_analysis";
+    }
+
+    public void resetAllModelsForPeriosAnalysis() {
+        bcReception = new BarChartModel();
+        bcListening = new BarChartModel();
+        bcReply = new BarChartModel();
+        bcResponse = new BarChartModel();
+        bcEfficiency = new BarChartModel();
+        bcFacilities = new BarChartModel();
+        bcGeneral = new BarChartModel();
+    }
+
+    public ResponseSummery calculateResponseSummery(ResponseSummery rs) {
+        System.out.println("rs.getResponseFor() = " + rs.getResponseFor());
+        rs.totalResponses = rs.veryGoodCount + rs.goodCount + rs.averageCount + rs.poorCount + rs.veryPoorCount;
+        System.out.println("rs.totalResponses = " + rs.totalResponses);
+        rs.totalQuestionnears = rs.totalResponses + rs.notAnsweredCount;
+        System.out.println("rs.totalQuestionnears = " + rs.totalQuestionnears);
+        if (rs.totalResponses == 0) {
+            return rs;
+        }
+        rs.veryGoodPercent = (rs.veryGoodCount / rs.totalResponses) * 100;
+        System.out.println("rs.veryGoodCount = " + rs.veryGoodCount);
+        System.out.println("rs.totalResponses = " + rs.totalResponses);
+        System.out.println("rs.veryGoodPercent = " + rs.veryGoodPercent);
+        rs.goodPercent = (rs.goodCount / rs.totalResponses) * 100;
+        System.out.println("rs.goodPercent = " + rs.goodPercent);
+        rs.averagePercent = (rs.averageCount / rs.totalResponses) * 100;
+        System.out.println("rs.averagePercent = " + rs.averagePercent);
+        rs.poorPercent = (rs.poorCount / rs.totalResponses) * 100;
+        System.out.println("rs.poorPercent = " + rs.poorPercent);
+        rs.veryPoorPercent = (rs.veryPoorCount / rs.totalResponses) * 100;
+        System.out.println("rs.veryPoorPercent = " + rs.veryPoorPercent);
+        return rs;
+    }
+
+    public BarChartModel createBarChartModel(BarChartModel model, ResponseSummery r) {
+        model = new BarChartModel();
+        model.setAnimate(true);
+        model.getAxis(AxisType.Y).setMax(100);
+        model.getAxis(AxisType.Y).setMin(0);
+        
+        ChartSeries responsesSeries = new ChartSeries();
+        responsesSeries.set("ඉතා හොදයි", r.veryGoodPercent);
+        responsesSeries.set("හොදයි", r.goodPercent);
+        responsesSeries.set("සාමාන්‍යයි", r.averagePercent);
+        responsesSeries.set("දුර්වලයි", r.poorCount);
+        responsesSeries.set("ඉතා දුර්වලයි", r.veryPoorCount);
+
+        model.addSeries(responsesSeries);
+
+        return model;
+
+    }
+
+    public void createPeriodAnalysisOfAllResponses() {
+        System.out.println("createPeriodAnalysisOfAllResponses");
+        List<Questioner> questioners;
+        String j = "select q from Questioner q where q.questionerDate between :fd and :td";
+        Map m = new HashMap();
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        questioners = getQueFacade().findBySQL(j, m);
+
+        System.out.println("questioners.size() = " + questioners.size());
+
+        reception = new ResponseSummery(ResponseFor.reception);
+        listening = new ResponseSummery(ResponseFor.listening);
+        response = new ResponseSummery(ResponseFor.response);
+        reply = new ResponseSummery(ResponseFor.reply);
+        efficiency = new ResponseSummery(ResponseFor.efficiency);
+        facilities = new ResponseSummery(ResponseFor.facilities);
+        general = new ResponseSummery(ResponseFor.general);
+
+        List<Response> res = getResFacade().findBySQL("select r from Response r order by r.id");
+        System.out.println("res.size = " + res.size());
+        if (res.size() < 5) {
+            JsfUtil.addErrorMessage("Response Error. Less than one.");
+            return;
+        }
+        Response vg = res.get(0);
+        Response g = res.get(1);
+        Response a = res.get(2);
+        Response p = res.get(3);
+        Response vp = res.get(4);
+
+        for (Questioner q : questioners) {
+            System.out.println("q = " + q);
+            if (q.getReception() == null) {
+                reception.notAnsweredCount++;
+            } else if (q.getReception().equals(vg)) {
+                reception.veryGoodCount++;
+            } else if (q.getReception().equals(g)) {
+                reception.goodCount++;
+            } else if (q.getReception().equals(a)) {
+                reception.averageCount++;
+            } else if (q.getReception().equals(p)) {
+                reception.poorCount++;
+            } else if (q.getReception().equals(vp)) {
+                reception.veryPoorCount++;
+            }
+
+            if (q.getListening()== null) {
+                listening.notAnsweredCount++;
+            } else if (q.getListening().equals(vg)) {
+                listening.veryGoodCount++;
+            } else if (q.getListening().equals(g)) {
+                listening.goodCount++;
+            } else if (q.getListening().equals(a)) {
+                listening.averageCount++;
+            } else if (q.getListening().equals(p)) {
+                listening.poorCount++;
+            } else if (q.getListening().equals(vp)) {
+                listening.veryPoorCount++;
+            }
+
+            if (q.getResponse()== null) {
+                response.notAnsweredCount++;
+            } else if (q.getResponse().equals(vg)) {
+                response.veryGoodCount++;
+            } else if (q.getResponse().equals(g)) {
+                response.goodCount++;
+            } else if (q.getResponse().equals(a)) {
+                response.averageCount++;
+            } else if (q.getResponse().equals(p)) {
+                response.poorCount++;
+            } else if (q.getResponse().equals(vp)) {
+                response.veryPoorCount++;
+            }
+
+            if (q.getReply()== null) {
+                reply.notAnsweredCount++;
+            } else if (q.getReply().equals(vg)) {
+                reply.veryGoodCount++;
+            } else if (q.getReply().equals(g)) {
+                reply.goodCount++;
+            } else if (q.getReply().equals(a)) {
+                reply.averageCount++;
+            } else if (q.getReply().equals(p)) {
+                reply.poorCount++;
+            } else if (q.getReply().equals(vp)) {
+                reply.veryPoorCount++;
+            }
+
+            if (q.getEfficiency()== null) {
+                efficiency.notAnsweredCount++;
+            } else if (q.getEfficiency().equals(vg)) {
+                efficiency.veryGoodCount++;
+            } else if (q.getEfficiency().equals(g)) {
+                efficiency.goodCount++;
+            } else if (q.getEfficiency().equals(a)) {
+                efficiency.averageCount++;
+            } else if (q.getEfficiency().equals(p)) {
+                efficiency.poorCount++;
+            } else if (q.getEfficiency().equals(vp)) {
+                efficiency.veryPoorCount++;
+            }
+
+            if (q.getFacilities()== null) {
+                facilities.notAnsweredCount++;
+            } else if (q.getFacilities().equals(vg)) {
+                facilities.veryGoodCount++;
+            } else if (q.getFacilities().equals(g)) {
+                facilities.goodCount++;
+            } else if (q.getFacilities().equals(a)) {
+                facilities.averageCount++;
+            } else if (q.getFacilities().equals(p)) {
+                facilities.poorCount++;
+            } else if (q.getFacilities().equals(vp)) {
+                facilities.veryPoorCount++;
+            }
+
+            if (q.getGeneral()== null) {
+                general.notAnsweredCount++;
+            } else if (q.getGeneral().equals(vg)) {
+                general.veryGoodCount++;
+            } else if (q.getGeneral().equals(g)) {
+                general.goodCount++;
+            } else if (q.getGeneral().equals(a)) {
+                general.averageCount++;
+            } else if (q.getGeneral().equals(p)) {
+                general.poorCount++;
+            } else if (q.getGeneral().equals(vp)) {
+                general.veryPoorCount++;
+            }
+
+        }
+
+        reception = calculateResponseSummery(reception);
+        response = calculateResponseSummery(response);
+        listening = calculateResponseSummery(listening);
+        reply = calculateResponseSummery(reply);
+        efficiency = calculateResponseSummery(efficiency);
+        facilities = calculateResponseSummery(facilities);
+        general = calculateResponseSummery(general);
+
+        bcReception = createBarChartModel(bcReception, reception);
+        bcResponse = createBarChartModel(bcResponse, response);
+        bcListening = createBarChartModel(bcListening, listening);
+        bcReply = createBarChartModel(bcReply, reply);
+        bcEfficiency = createBarChartModel(bcEfficiency, efficiency);
+        bcFacilities = createBarChartModel(bcFacilities, facilities);
+        bcGeneral = createBarChartModel(bcGeneral, general);
+
+    }
 
     public Date getFromDate() {
         if (fromDate == null) {
@@ -100,7 +326,7 @@ public class AnalysisController {
         this.toDate = toDate;
     }
 
-    public CartesianChartModel getCcmReocrds() {
+    public LineChartModel getCcmReocrds() {
         if (ccmReocrds == null) {
             ccmReocrds = new LineChartModel();
         }
@@ -143,7 +369,7 @@ public class AnalysisController {
         }
     }
 
-    public CartesianChartModel getPcmYearlyPreviousVisits() {
+    public BarChartModel getPcmYearlyPreviousVisits() {
         List<Questioner> questioners;
         questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
         List<YearCount> lst = new ArrayList<YearCount>();
@@ -160,7 +386,7 @@ public class AnalysisController {
                 }
             }
         }
-        pcmYearlyPreviousVisits = new CartesianChartModel();
+        pcmYearlyPreviousVisits = new BarChartModel();
         ChartSeries csp = new ChartSeries("Yes");
         ChartSeries csn = new ChartSeries("No");
         for (YearCount yc : lst) {
@@ -179,11 +405,11 @@ public class AnalysisController {
         return pcmYearlyPreviousVisits;
     }
 
-    public void setPcmYearlyPreviousVisits(CartesianChartModel pcmYearlyPreviousVisits) {
+    public void setPcmYearlyPreviousVisits(BarChartModel pcmYearlyPreviousVisits) {
         this.pcmYearlyPreviousVisits = pcmYearlyPreviousVisits;
     }
 
-    public CartesianChartModel getCcmYearlyFillfilled() {
+    public BarChartModel getCcmYearlyFillfilled() {
         List<Questioner> questioners;
         questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
         List<YearCount> lst = new ArrayList<YearCount>();
@@ -200,7 +426,7 @@ public class AnalysisController {
                 }
             }
         }
-        ccmYearlyFillfilled = new CartesianChartModel();
+        ccmYearlyFillfilled = new BarChartModel();
         ChartSeries csp = new ChartSeries("Yes");
         ChartSeries csn = new ChartSeries("No");
         for (YearCount yc : lst) {
@@ -266,18 +492,22 @@ public class AnalysisController {
         String jpql;
         Map m;
 
-        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
-        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
-        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
-        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
+        List<Response> rs = getResFacade().findAll();
+
+        Response veryGood = rs.get(0);
+        Response good = rs.get(1);
+        Response average = rs.get(2);
+        Response poor = rs.get(3);
+        Response worst = rs.get(4);
 
         List<Response> responses = new ArrayList<Response>();
 
         Long maxVal = 10l;
-        responses.add(excellent);
         responses.add(veryGood);
         responses.add(good);
+        responses.add(average);
         responses.add(poor);
+        responses.add(worst);
         System.out.println("responses = " + responses);
 
         System.out.println("selectedResponseFors = " + selectedResponseFors);
@@ -333,7 +563,7 @@ public class AnalysisController {
         yAxis = model.getAxis(AxisType.Y);
         yAxis.setLabel("Responses");
         yAxis.setMin(0);
-        yAxis.setMax(maxVal+ maxVal*.2);
+        yAxis.setMax(maxVal + maxVal * .2);
         ccmReocrds = model;
     }
 
@@ -389,7 +619,7 @@ public class AnalysisController {
                 System.out.println("t = " + t);
                 chartSeries.setLabel(t);
 
-                for (int monthCount = 0; monthCount < monthsDifference; monthCount=monthCount+3) {
+                for (int monthCount = 0; monthCount < monthsDifference; monthCount = monthCount + 3) {
 
                     Calendar startDate = Calendar.getInstance();
                     startDate.setTime(beginningDate);
@@ -409,10 +639,9 @@ public class AnalysisController {
                     System.out.println("m = " + m);
                     System.out.println("jpql = " + jpql);
 
-                    int q = (startDate.get(Calendar.MONTH)/3)+1;
+                    int q = (startDate.get(Calendar.MONTH) / 3) + 1;
                     String period = new SimpleDateFormat("yyyy").format(startDate.getTime()) + " - " + q;
-                    
-                    
+
                     Long l = queFacade.findLongBySQL(jpql, m);
                     if (l > maxVal) {
                         maxVal = l;
@@ -434,11 +663,11 @@ public class AnalysisController {
         yAxis = model.getAxis(AxisType.Y);
         yAxis.setLabel("Responses");
         yAxis.setMin(0);
-        yAxis.setMax(maxVal + maxVal*.2 );
+        yAxis.setMax(maxVal + maxVal * .2);
         ccmReocrds = model;
     }
 
-    public CartesianChartModel getCcmYearlyRepeatVisits() {
+    public BarChartModel getCcmYearlyRepeatVisits() {
         List<Questioner> questioners;
         questioners = getQueFacade().findBySQL("select q from Questioner q order by q.questionerDate");
         List<YearCount> lst = new ArrayList<YearCount>();
@@ -455,7 +684,7 @@ public class AnalysisController {
                 }
             }
         }
-        ccmYearlyFillfilled = new CartesianChartModel();
+        ccmYearlyFillfilled = new BarChartModel();
         ChartSeries csp = new ChartSeries("Yes");
         ChartSeries csn = new ChartSeries("No");
         for (YearCount yc : lst) {
@@ -474,7 +703,7 @@ public class AnalysisController {
         return ccmYearlyFillfilled;
     }
 
-    public void setCcmYearlyFillfilled(CartesianChartModel ccmYearlyFillfilled) {
+    public void setCcmYearlyFillfilled(BarChartModel ccmYearlyFillfilled) {
         this.ccmYearlyFillfilled = ccmYearlyFillfilled;
     }
 
@@ -488,7 +717,7 @@ public class AnalysisController {
         return perFacade;
     }
 
-    public CartesianChartModel getCcmPersonFullfill() {
+    public BarChartModel getCcmPersonFullfill() {
         return ccmPersonFullfill;
     }
 
@@ -572,19 +801,20 @@ public class AnalysisController {
         long noCount = 0;
         List<Questioner> questioners = getQueFacade().findAll();
         for (Questioner q : questioners) {
-            if (q.getPreviousVisits()) {
-                yesCount++;
-            } else {
+            if (q.getNoOfVisits() == null || q.getNoOfVisits() < 2) {
                 noCount++;
+            } else {
+                yesCount++;
             }
         }
         pcmPreviousVisits.set("Yes", yesCount);
         pcmPreviousVisits.set("No", noCount);
+
         return pcmPreviousVisits;
     }
 
-    public CartesianChartModel getCcmResponse() {
-        ccmResponse = new CartesianChartModel();
+    public BarChartModel getCcmResponse() {
+        ccmResponse = new BarChartModel();
         ChartSeries reception = new ChartSeries("Reception");
         ChartSeries courtesy = new ChartSeries("Courtesy");
         ChartSeries listening = new ChartSeries("Listening");
@@ -770,8 +1000,8 @@ public class AnalysisController {
         return ccmResponse;
     }
 
-    public CartesianChartModel getCcmResponseHor() {
-        ccmResponse = new CartesianChartModel();
+    public BarChartModel getCcmResponseHor() {
+        ccmResponse = new BarChartModel();
         ChartSeries csExcellent = new ChartSeries("Excellent");
         ChartSeries csVeryGood = new ChartSeries("Very Good");
         ChartSeries csGood = new ChartSeries("Good");
@@ -953,8 +1183,8 @@ public class AnalysisController {
         return ccmResponse;
     }
 
-    public CartesianChartModel getCcmReturnCount() {
-        ccmReturnCount = new CartesianChartModel();
+    public BarChartModel getCcmReturnCount() {
+        ccmReturnCount = new BarChartModel();
         ChartSeries visitCount = new ChartSeries();
         visitCount.setLabel("No. of Visits");
 
@@ -1009,8 +1239,8 @@ public class AnalysisController {
         return ccmReturnCount;
     }
 
-    public CartesianChartModel getCcmDuration() {
-        ccmDuration = new CartesianChartModel();
+    public BarChartModel getCcmDuration() {
+        ccmDuration = new BarChartModel();
         ChartSeries duration = new ChartSeries();
         duration.setLabel("Duraton");
 
@@ -1123,8 +1353,133 @@ public class AnalysisController {
     public void setPersonOrderNo(int personOrderNo) {
         this.personOrderNo = personOrderNo;
     }
-    
-    
-    
-    
+
+    public BarChartModel getBcReception() {
+        return bcReception;
+    }
+
+    public void setBcReception(BarChartModel bcReception) {
+        this.bcReception = bcReception;
+    }
+
+    public BarChartModel getBcListening() {
+        return bcListening;
+    }
+
+    public void setBcListening(BarChartModel bcListening) {
+        this.bcListening = bcListening;
+    }
+
+    public BarChartModel getBcReply() {
+        return bcReply;
+    }
+
+    public void setBcReply(BarChartModel bcReply) {
+        this.bcReply = bcReply;
+    }
+
+    public BarChartModel getBcResponse() {
+        return bcResponse;
+    }
+
+    public void setBcResponse(BarChartModel bcResponse) {
+        this.bcResponse = bcResponse;
+    }
+
+    public BarChartModel getBcEfficiency() {
+        return bcEfficiency;
+    }
+
+    public void setBcEfficiency(BarChartModel bcEfficiency) {
+        this.bcEfficiency = bcEfficiency;
+    }
+
+    public BarChartModel getBcFacilities() {
+        return bcFacilities;
+    }
+
+    public void setBcFacilities(BarChartModel bcFacilities) {
+        this.bcFacilities = bcFacilities;
+    }
+
+    public BarChartModel getBcGeneral() {
+        return bcGeneral;
+    }
+
+    public void setBcGeneral(BarChartModel bcGeneral) {
+        this.bcGeneral = bcGeneral;
+    }
+
+    public BarChartModel getBarChartModel() {
+        return barChartModel;
+    }
+
+    public void setBarChartModel(BarChartModel barChartModel) {
+        this.barChartModel = barChartModel;
+    }
+
+    public LineChartModel getLineModel2() {
+        return lineModel2;
+    }
+
+    public void setLineModel2(LineChartModel lineModel2) {
+        this.lineModel2 = lineModel2;
+    }
+
+    public ResponseSummery getReception() {
+        return reception;
+    }
+
+    public void setReception(ResponseSummery reception) {
+        this.reception = reception;
+    }
+
+    public ResponseSummery getListening() {
+        return listening;
+    }
+
+    public void setListening(ResponseSummery listening) {
+        this.listening = listening;
+    }
+
+    public ResponseSummery getResponse() {
+        return response;
+    }
+
+    public void setResponse(ResponseSummery response) {
+        this.response = response;
+    }
+
+    public ResponseSummery getReply() {
+        return reply;
+    }
+
+    public void setReply(ResponseSummery reply) {
+        this.reply = reply;
+    }
+
+    public ResponseSummery getEfficiency() {
+        return efficiency;
+    }
+
+    public void setEfficiency(ResponseSummery efficiency) {
+        this.efficiency = efficiency;
+    }
+
+    public ResponseSummery getFacilities() {
+        return facilities;
+    }
+
+    public void setFacilities(ResponseSummery facilities) {
+        this.facilities = facilities;
+    }
+
+    public ResponseSummery getGeneral() {
+        return general;
+    }
+
+    public void setGeneral(ResponseSummery general) {
+        this.general = general;
+    }
+
 }

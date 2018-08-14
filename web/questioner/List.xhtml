@@ -9,16 +9,33 @@
     <ui:composition template="/template.xhtml">
         <ui:define name="body">
             <h:form>
-                <h:commandButton value="Export">
-                    <p:dataExporter type="cvs" target="tbl" fileName="cars" />  
-                </h:commandButton>  
-                <p:dataTable id="tbl" value="#{questionerController.items}" var="item" >
-                    <p:column>
+                <p:panelGrid columns="2" >
+                    <p:outputLabel value="From" ></p:outputLabel>
+                    <p:calendar value="#{questionerController.fromDate}" pattern="dd MMMM yyyy" ></p:calendar>
+                    <p:outputLabel value="To" ></p:outputLabel>
+                    <p:calendar value="#{questionerController.toDate}"  pattern="dd MMMM yyyy" ></p:calendar>
+                </p:panelGrid>
+
+                <p:panelGrid columns="2" >
+                    <p:commandButton value="Fill" ajax="false" action="#{questionerController.listItems}" ></p:commandButton>
+                    <p:commandButton value="Export" ajax="false">
+                        <p:dataExporter type="xls" target="tbl" fileName="cars" />  
+                    </p:commandButton>  
+                </p:panelGrid>
+
+
+                <p:dataTable id="tbl" value="#{questionerController.searchItems}" var="item"
+                             rowKey="#{item.id}" rows="10"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             >
+                    <p:column sortBy="#{item.questionerDate}">
                         <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_questionerDate}"/>
+                            <h:outputText value="Date"/>
                         </f:facet>
                         <h:outputText value="#{item.questionerDate}">
-                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                            <f:convertDateTime pattern="dd/MM/yy" />
                         </h:outputText>
                     </p:column>
                     <p:column>
@@ -45,12 +62,7 @@
                         </f:facet>
                         <h:outputText value="#{item.address}"/>
                     </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_courtesy}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.courtesy.name}"/>
-                    </p:column>
+                   
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="#{bundle.ListQuestionerTitle_efficiency}"/>
