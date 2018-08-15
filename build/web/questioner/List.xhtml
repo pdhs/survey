@@ -19,7 +19,7 @@
                 <p:panelGrid columns="2" >
                     <p:commandButton value="Fill" ajax="false" action="#{questionerController.listItems}" ></p:commandButton>
                     <p:commandButton value="Export" ajax="false">
-                        <p:dataExporter type="xls" target="tbl" fileName="cars" />  
+                        <p:dataExporter type="xls" target="tbl" fileName="CustomerFeedbacks" />  
                     </p:commandButton>  
                 </p:panelGrid>
 
@@ -40,10 +40,39 @@
                     </p:column>
                     <p:column>
                         <f:facet name="header">
+                            <h:outputText value="Time"/>
+                        </f:facet>
+                        <h:outputText value="#{item.questionerTime}">
+                            <f:convertDateTime pattern="hh:mm a" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NIC"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nic}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Requirement"/>
+                        </f:facet>
+                        <h:outputText value="#{item.requirement}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
                             <h:outputText value="Officer"/>
                         </f:facet>
                         <h:outputText value="#{item.person.name}"/>
-                    </p:column>                        
+                    </p:column>  
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Fullfilled"/>
+                        </f:facet>
+                        <h:outputText value="#{item.requirementSatisfied?'Yes':'No'}"/>
+                    </p:column>  
+
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="#{bundle.ListQuestionerTitle_timeTakenHrs}"/>
@@ -56,13 +85,40 @@
                         </f:facet>
                         <h:outputText value="#{item.timeTakenMin}"/>
                     </p:column>
+
+
                     <p:column>
                         <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_address}"/>
+                            <h:outputText value="No of Times Visited"/>
                         </f:facet>
-                        <h:outputText value="#{item.address}"/>
+                        <h:outputText value="#{item.noOfVisits}"/>
                     </p:column>
-                   
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Reception"/>
+                        </f:facet>
+                        <h:outputText value="#{item.reception.name}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle.ListQuestionerTitle_listening}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.listening.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Reply"/>
+                        </f:facet>
+                        <h:outputText value="#{item.reply.name}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundle.ListQuestionerTitle_response}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.response.name}"/>
+                    </p:column>
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="#{bundle.ListQuestionerTitle_efficiency}"/>
@@ -81,73 +137,8 @@
                         </f:facet>
                         <h:outputText value="#{item.general.name}"/>
                     </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_listening}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.listening.name}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_name}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.name}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_noOfVisits}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.noOfVisits}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_officerName}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.officerName}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_officerPost}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.officerPost}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_previousVisits}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.previousVisits}"/>
-                    </p:column>
 
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_reception}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.reception.name}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_reply}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.reply.name}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_requirement}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.requirement}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_requirementSatisfied}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.requirementSatisfied}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_response}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.response}"/>
-                    </p:column>
+
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="#{bundle.ListQuestionerTitle_suggestions}"/>
@@ -156,13 +147,7 @@
                     </p:column>
                     <p:column>
                         <f:facet name="header">
-                            <h:outputText value="#{bundle.ListQuestionerTitle_telephone}"/>
-                        </f:facet>
-                        <h:outputText value="#{item.telephone}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="&nbsp;"/>
+                            <h:outputText value="Actions"/>
                         </f:facet>
                         <p:commandButton ajax="false" action="#{questionerController.prepareView}" value="Edit" >
                             <f:setPropertyActionListener value="#{item}" target="#{questionerController.current}" />

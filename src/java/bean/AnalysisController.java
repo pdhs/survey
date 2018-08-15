@@ -75,6 +75,14 @@ public class AnalysisController {
     private BarChartModel bcFacilities;
     private BarChartModel bcGeneral;
 
+    private LineChartModel lcReception;
+    private LineChartModel lcListening;
+    private LineChartModel lcReply;
+    private LineChartModel lcResponse;
+    private LineChartModel lcEfficiency;
+    private LineChartModel llcFacilities;
+    private LineChartModel lcGeneral;
+
     private ResponseSummery reception;
     private ResponseSummery listening;
     private ResponseSummery response;
@@ -136,7 +144,7 @@ public class AnalysisController {
         model.setAnimate(true);
         model.getAxis(AxisType.Y).setMax(100);
         model.getAxis(AxisType.Y).setMin(0);
-        
+
         ChartSeries responsesSeries = new ChartSeries();
         responsesSeries.set("ඉතා හොදයි", r.veryGoodPercent);
         responsesSeries.set("හොදයි", r.goodPercent);
@@ -197,7 +205,7 @@ public class AnalysisController {
                 reception.veryPoorCount++;
             }
 
-            if (q.getListening()== null) {
+            if (q.getListening() == null) {
                 listening.notAnsweredCount++;
             } else if (q.getListening().equals(vg)) {
                 listening.veryGoodCount++;
@@ -211,7 +219,7 @@ public class AnalysisController {
                 listening.veryPoorCount++;
             }
 
-            if (q.getResponse()== null) {
+            if (q.getResponse() == null) {
                 response.notAnsweredCount++;
             } else if (q.getResponse().equals(vg)) {
                 response.veryGoodCount++;
@@ -225,7 +233,7 @@ public class AnalysisController {
                 response.veryPoorCount++;
             }
 
-            if (q.getReply()== null) {
+            if (q.getReply() == null) {
                 reply.notAnsweredCount++;
             } else if (q.getReply().equals(vg)) {
                 reply.veryGoodCount++;
@@ -239,7 +247,7 @@ public class AnalysisController {
                 reply.veryPoorCount++;
             }
 
-            if (q.getEfficiency()== null) {
+            if (q.getEfficiency() == null) {
                 efficiency.notAnsweredCount++;
             } else if (q.getEfficiency().equals(vg)) {
                 efficiency.veryGoodCount++;
@@ -253,7 +261,7 @@ public class AnalysisController {
                 efficiency.veryPoorCount++;
             }
 
-            if (q.getFacilities()== null) {
+            if (q.getFacilities() == null) {
                 facilities.notAnsweredCount++;
             } else if (q.getFacilities().equals(vg)) {
                 facilities.veryGoodCount++;
@@ -267,7 +275,7 @@ public class AnalysisController {
                 facilities.veryPoorCount++;
             }
 
-            if (q.getGeneral()== null) {
+            if (q.getGeneral() == null) {
                 general.notAnsweredCount++;
             } else if (q.getGeneral().equals(vg)) {
                 general.veryGoodCount++;
@@ -594,18 +602,22 @@ public class AnalysisController {
         String jpql;
         Map m;
 
-        Response excellent = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Very Good'").get(0);
-        Response veryGood = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Good'").get(0);
-        Response good = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Normal'").get(0);
-        Response poor = getResFacade().findBySQL("SELECT r From Response r WHERE r.name = 'Weak'").get(0);
+        List<Response> ers = getResFacade().findBySQL("SELECT r From Response r order by r.id");
+
+        Response vg = ers.get(0);
+        Response g = ers.get(1);
+        Response a = ers.get(2);
+        Response p = ers.get(3);
+        Response vp = ers.get(4);
 
         List<Response> responses = new ArrayList<Response>();
 
         Long maxVal = 10l;
-        responses.add(excellent);
-        responses.add(veryGood);
-        responses.add(good);
-        responses.add(poor);
+        responses.add(vg);
+        responses.add(g);
+        responses.add(a);
+        responses.add(p);
+        responses.add(vp);
         System.out.println("responses = " + responses);
 
         System.out.println("selectedResponseFors = " + selectedResponseFors);
@@ -1482,4 +1494,62 @@ public class AnalysisController {
         this.general = general;
     }
 
+    public LineChartModel getLcReception() {
+        return lcReception;
+    }
+
+    public void setLcReception(LineChartModel lcReception) {
+        this.lcReception = lcReception;
+    }
+
+    public LineChartModel getLcListening() {
+        return lcListening;
+    }
+
+    public void setLcListening(LineChartModel lcListening) {
+        this.lcListening = lcListening;
+    }
+
+    public LineChartModel getLcReply() {
+        return lcReply;
+    }
+
+    public void setLcReply(LineChartModel lcReply) {
+        this.lcReply = lcReply;
+    }
+
+    public LineChartModel getLcResponse() {
+        return lcResponse;
+    }
+
+    public void setLcResponse(LineChartModel lcResponse) {
+        this.lcResponse = lcResponse;
+    }
+
+    public LineChartModel getLcEfficiency() {
+        return lcEfficiency;
+    }
+
+    public void setLcEfficiency(LineChartModel lcEfficiency) {
+        this.lcEfficiency = lcEfficiency;
+    }
+
+    public LineChartModel getLlcFacilities() {
+        return llcFacilities;
+    }
+
+    public void setLlcFacilities(LineChartModel llcFacilities) {
+        this.llcFacilities = llcFacilities;
+    }
+
+    public LineChartModel getLcGeneral() {
+        return lcGeneral;
+    }
+
+    public void setLcGeneral(LineChartModel lcGeneral) {
+        this.lcGeneral = lcGeneral;
+    }
+
+    
+    
 }

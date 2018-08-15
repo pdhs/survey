@@ -23,7 +23,11 @@
                     <p:outputLabel value="To" ></p:outputLabel>
                     <p:calendar value="#{analysisController.toDate}" pattern="dd MMMM yyyy" ></p:calendar>
                     <p:spacer ></p:spacer>
-                    <p:commandButton value="Analyze" ajax="false" action="#{analysisController.createPeriodAnalysisOfAllResponses()}" ></p:commandButton>
+                    <h:panelGroup >
+                        <p:commandButton value="Analyze" ajax="false" action="#{analysisController.createPeriodAnalysisOfAllResponses()}" ></p:commandButton>
+                        <p:commandButton value="Print" ajax="false" onclick="window.print()" ></p:commandButton>
+                    </h:panelGroup>
+
                 </p:panelGrid>
 
                 <p:panelGrid columns="2"  >
@@ -39,23 +43,33 @@
                                 <p:outputLabel value="#{analysisController.reception.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber>
                                 </p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reception.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reception.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reception.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reception.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reception.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reception.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reception.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reception.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reception.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reception.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reception.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reception.veryPoorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reception.veryPoorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reception.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
@@ -70,29 +84,39 @@
                                 <p:outputLabel value="ඉතා හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.listening.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.listening.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.listening.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.listening.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.listening.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.listening.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.listening.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.listening.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.listening.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.listening.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.listening.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.listening.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.listening.veryPoorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.listening.veryPoorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.listening.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
                     <p:panel header="පිළිතුරු දීම"   >
-                        <h:panelGrid columns="1" style="vertical-align: top;" >
-                            <p:chart type="bar" rendered="#{analysisController.bcReply ne null}"  model="#{analysisController.bcReply}" style="width: 400px;" ></p:chart>
+                        <h:panelGrid columns="1" style="vertical-align: top;" id="paReply" >
+                            <p:chart id="barReply" type="bar" rendered="#{analysisController.bcReply ne null}"  model="#{analysisController.bcReply}" style="width: 400px;" ></p:chart>
                             <p:panelGrid columns="3" >
                                 <p:outputLabel value="Response" ></p:outputLabel>
                                 <p:outputLabel value="Count" ></p:outputLabel>
@@ -100,24 +124,34 @@
                                 <p:outputLabel value="ඉතා හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reply.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reply.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reply.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reply.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reply.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reply.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reply.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber>
                                 </p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reply.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reply.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reply.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reply.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reply.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.reply.veryPoorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.reply.veryPoorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.reply.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
@@ -131,23 +165,33 @@
                                 <p:outputLabel value="ඉතා හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.response.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.response.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.response.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.response.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.response.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.response.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.response.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.response.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.response.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.response.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.response.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.response.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.response.veryPoorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.response.veryPoorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.response.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
@@ -161,23 +205,33 @@
                                 <p:outputLabel value="ඉතා හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.efficiency.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.efficiency.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.efficiency.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.efficiency.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.efficiency.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.efficiency.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.efficiency.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.efficiency.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.efficiency.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.efficiency.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.efficiency.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.efficiency.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.efficiency.veryPoorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.efficiency.veryPoorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.efficiency.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
@@ -191,23 +245,33 @@
                                 <p:outputLabel value="ඉතා හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.facilities.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.facilities.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.facilities.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.facilities.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.facilities.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.facilities.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.facilities.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.facilities.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.facilities.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.facilities.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.facilities.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.facilities.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.facilities.veryPoorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.facilities.veryPoorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.facilities.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
@@ -221,24 +285,35 @@
                                 <p:outputLabel value="ඉතා හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.general.veryGoodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.general.veryGoodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.general.veryGoodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="හොදයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.general.goodCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
 
-                                <p:outputLabel value="#{analysisController.general.goodPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.general.goodPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="සාමාන්‍යයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.general.averageCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.general.averagePercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.general.averagePercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.general.poorCount}" >
                                     <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.general.poorPercent}" ></p:outputLabel>
+                                <p:outputLabel value="#{analysisController.general.poorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                                 <p:outputLabel value="ඉතා දුර්වලයි" ></p:outputLabel>
                                 <p:outputLabel value="#{analysisController.general.veryPoorCount}" >
-                                    <f:convertNumber integerOnly="true" ></f:convertNumber></p:outputLabel>
-                                <p:outputLabel value="#{analysisController.general.veryPoorPercent}" ></p:outputLabel>
+                                    <f:convertNumber integerOnly="true" ></f:convertNumber>
+                                </p:outputLabel>
+                                <p:outputLabel value="#{analysisController.general.veryPoorPercent}" >
+                                    <f:convertNumber pattern="#0.0"></f:convertNumber>
+                                </p:outputLabel>
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:panel>
