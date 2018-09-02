@@ -83,7 +83,6 @@ public abstract class AbstractFacade<T> {
         Iterator it = s.iterator();
         while (it.hasNext()) {
             Map.Entry m = (Map.Entry) it.next();
-
             String pPara = (String) m.getKey();
             Object pVal = m.getValue();
             if (pVal instanceof Date) {
@@ -92,7 +91,6 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-            System.out.println("Parameter " + pPara + "\tVal" + pVal);
         }
         return qry.getResultList();
     }
@@ -114,6 +112,20 @@ public abstract class AbstractFacade<T> {
             }
 //            System.out.println("Parameter " + pPara + "\tVal" + pVal);
         }
+        Long l;
+        try {
+            l = (Long) qry.getSingleResult();
+        } catch (Exception e) {
+            l = 0l;
+        }
+        if (l == null) {
+            l = 0l;
+        }
+        return l;
+    }
+
+    public Long findLongBySQL(String temSQL) {
+        TypedQuery<T> qry = getEntityManager().createQuery(temSQL, entityClass);
         Long l;
         try {
             l = (Long) qry.getSingleResult();

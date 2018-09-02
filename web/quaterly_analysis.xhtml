@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+
+    <ui:composition template="template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Quarterly Analysis"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+
+
+            <h:form >
+                <p:growl ></p:growl>
+                <p:panelGrid columns="2" >
+                    <p:outputLabel value="From" ></p:outputLabel>
+                    <p:calendar value="#{analysisController.fromDate}" pattern="dd MMMM yyyy" ></p:calendar>
+                    <p:outputLabel value="To" ></p:outputLabel>
+                    <p:calendar value="#{analysisController.toDate}" pattern="dd MMMM yyyy" ></p:calendar>
+                    <p:spacer ></p:spacer>
+                    <h:panelGroup >
+                        <p:commandButton value="Analyze" ajax="false" action="#{analysisController.fillQuartelyAnalysis()}" ></p:commandButton>
+                        <p:commandButton value="Print" ajax="false" onclick="window.print()" ></p:commandButton>
+                    </h:panelGroup>
+
+                </p:panelGrid>
+
+                <p:panelGrid columns="1" style="width: 98%; margin: auto;"  >
+                    <p:panel header="පිළිගනිම හා අචරශිලී බව"   style="width: 98%; margin: auto;"   >
+                        <p:chart  type="line" rendered="#{analysisController.lcReception ne null}"  model="#{analysisController.lcReception}"  style="width: 98%; margin: auto;"  ></p:chart>
+                    </p:panel>
+                    <p:panel header="ඇහුම්කන්දීම"   >
+                        <p:chart type="line" rendered="#{analysisController.lcListening ne null}"  
+                                 model="#{analysisController.lcListening}"  style="width: 98%; margin: auto;"  ></p:chart>
+                    </p:panel>
+                    <p:panel header="පිළිතුරු දීම"   >
+                        <p:chart id="barReply" type="line" rendered="#{analysisController.lcReply ne null}"  model="#{analysisController.lcReply}"  style="width: 98%; margin: auto;"  ></p:chart>
+                        <p:chart id="barReply1" type="line" rendered="#{analysisController.lineModel2 ne null}"  model="#{analysisController.lineModel2}"  style="width: 98%; margin: auto;"  ></p:chart>
+                    </p:panel>
+                    <p:panel header="ප්‍රතිචරත්මකබව"   >
+                        <p:chart type="line" rendered="#{analysisController.lcResponse ne null}"  model="#{analysisController.lcResponse}"  style="width: 98%; margin: auto;"  ></p:chart>
+
+                    </p:panel>
+                    <p:panel header="කාර්යක්ෂමබව"   >
+                        <p:chart type="line" rendered="#{analysisController.lcEfficiency ne null}"  model="#{analysisController.lcEfficiency}"  style="width: 98%; margin: auto;"  ></p:chart>
+
+                    </p:panel>
+                    <p:panel header="කාර්‍යය ඉටුවනතෙක් රැදී සිටීමට තිබූ පහසුකම් "   >
+                        <p:chart type="line" rendered="#{analysisController.lcFacilities ne null}"  model="#{analysisController.lcFacilities}"  style="width: 98%; margin: auto;"  ></p:chart>
+
+                    </p:panel>
+                    <p:panel header="සිදුවන සේවාව පිළිබද සමස්ථ ඇගයීම"   >
+                        <p:chart type="line" rendered="#{analysisController.lcGeneral ne null}"  model="#{analysisController.lcGeneral}"  style="width: 98%; margin: auto;"  ></p:chart>
+                    </p:panel>
+                </p:panelGrid>
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+
+</html>
+

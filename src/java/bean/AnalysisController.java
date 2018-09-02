@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.shape.Line;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -34,6 +35,7 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
 /**
@@ -80,7 +82,7 @@ public class AnalysisController {
     private LineChartModel lcReply;
     private LineChartModel lcResponse;
     private LineChartModel lcEfficiency;
-    private LineChartModel llcFacilities;
+    private LineChartModel lcFacilities;
     private LineChartModel lcGeneral;
 
     private ResponseSummery reception;
@@ -105,6 +107,11 @@ public class AnalysisController {
         return "/period_analysis";
     }
 
+    public String toCreatePeriodAnalysisOfQuaterlyAnalysis() {
+        resetAllModelsForQuaterlyAnalysis();
+        return "/quaterly_analysis";
+    }
+
     public void resetAllModelsForPeriosAnalysis() {
         bcReception = new BarChartModel();
         bcListening = new BarChartModel();
@@ -113,6 +120,16 @@ public class AnalysisController {
         bcEfficiency = new BarChartModel();
         bcFacilities = new BarChartModel();
         bcGeneral = new BarChartModel();
+    }
+
+    public void resetAllModelsForQuaterlyAnalysis() {
+        lcReception = new LineChartModel();
+        lcListening = new LineChartModel();
+        lcReply = new LineChartModel();
+        lcResponse = new LineChartModel();
+        lcEfficiency = new LineChartModel();
+        lcFacilities = new LineChartModel();
+        lcGeneral = new LineChartModel();
     }
 
     public ResponseSummery calculateResponseSummery(ResponseSummery rs) {
@@ -575,13 +592,113 @@ public class AnalysisController {
         ccmReocrds = model;
     }
 
-    public void fillQuartelyAnalysis() {
-        LineChartModel model = new LineChartModel();
+    private Double calculateResponsePercentage(Response tr, ResponseFor trf, Date tfd, Date ttd) {
+        Map m = new HashMap();
+        m.put("fd", tfd);
+        m.put("td", ttd);
+        String jpql = "Select q from Questioner q where q.questionerDate between :fd and :td";
+        List<Questioner> qs = getQueFacade().findBySQL(jpql, m);
+        Double tot = 0.0;
+        Double c = 0.0;
+        for (Questioner q : qs) {
+            Response r = null;
+            switch (trf) {
+                case efficiency:
+                    r = q.getEfficiency();
+                    break;
+                case courtesy:
+                    r = q.getCourtesy();
+                    break;
+                case facilities:
+                    r = q.getFacilities();
+                    break;
+                case general:
+                    r = q.getGeneral();
+                    break;
+                case listening:
+                    r = q.getListening();
+                    break;
+                case reception:
+                    r = q.getReception();
+                    break;
+                case reply:
+                    r = q.getReply();
+                    break;
+                case response:
+                    r = q.getResponse();
+                    break;
+            }
+            if (r != null) {
+                tot++;
+                if (r.equals(tr)) {
+                    c++;
+                }
+            }
+        }
 
+        Double p = 0.0;
+        if (tot > 0) {
+            p = (c / tot) * 100;
+        } else {
+            p = null;
+        }
+        return p;
+    }
+
+    
+    
+    public void fillQuartelyAnalysis() {
+        resetAllModelsForQuaterlyAnalysis();
+        fillQuartelyAnalysis(getLineModel2(), ResponseFor.reply, fromDate, toDate);
+        
+        
+//        LineChartModel model = getLineModel2();
+// 
+//        ChartSeries boys = new ChartSeries();
+//        boys.setLabel("Boys");
+//        boys.set("2004", 120);
+//        boys.set("2005", 100);
+//        boys.set("2006", 44);
+//        boys.set("2007", 150);
+//        boys.set("2008", 25);
+// 
+//        ChartSeries girls = new ChartSeries();
+//        girls.setLabel("Girls");
+//        girls.set("2004", 52);
+//        girls.set("2005", 60);
+//        girls.set("2006", 110);
+//        girls.set("2007", 90);
+//        girls.set("2008", 120);
+// 
+//        model.addSeries(boys);
+//        model.addSeries(girls);
+//        
+//        Axis yAxis = lineModel2.getAxis(AxisType.Y);
+//        yAxis.setMin(0);
+//        yAxis.setMax(10);
+//        
+//        lineModel2.setTitle("Category Chart");
+//        lineModel2.setLegendPosition("e");
+//        lineModel2.setShowPointLabels(true);
+//        lineModel2.getAxes().put(AxisType.X, new CategoryAxis("Years"));
+//        yAxis = lineModel2.getAxis(AxisType.Y);
+//        yAxis.setLabel("Births");
+//        yAxis.setMin(0);
+//        yAxis.setMax(200);
+// 
+//        getLcReply().addSeries(boys);
+//        getLcReply().addSeries(girls);
+        
+    }
+
+    
+    
+    
+    private void fillQuartelyAnalysis(LineChartModel lcm, ResponseFor rf, Date fd, Date td) {
         Calendar fc = Calendar.getInstance();
-        fc.setTime(fromDate);
+        fc.setTime(fd);
         Calendar tc = Calendar.getInstance();
-        tc.setTime(toDate);
+        tc.setTime(td);
 
         ReadableInstant fr = new DateTime(fc.get(Calendar.YEAR), fc.get(Calendar.MONTH) + 1, 1, 0, 0);
         ReadableInstant tr = new DateTime(tc.get(Calendar.YEAR), tc.get(Calendar.MONTH) + 1, 1, 0, 0);
@@ -599,84 +716,52 @@ public class AnalysisController {
         Date beginningDate = beginingCalander.getTime();
         System.out.println("beginningDate = " + beginningDate);
 
-        String jpql;
-        Map m;
 
         List<Response> ers = getResFacade().findBySQL("SELECT r From Response r order by r.id");
 
-        Response vg = ers.get(0);
-        Response g = ers.get(1);
-        Response a = ers.get(2);
-        Response p = ers.get(3);
-        Response vp = ers.get(4);
+       
 
-        List<Response> responses = new ArrayList<Response>();
+        for (Response r : ers) {
+            System.out.println("r = " + r);
+            LineChartSeries chartSeries = new LineChartSeries();
+            chartSeries.setLabel(r.getName());
+            System.out.println("rf = " + rf);
 
-        Long maxVal = 10l;
-        responses.add(vg);
-        responses.add(g);
-        responses.add(a);
-        responses.add(p);
-        responses.add(vp);
-        System.out.println("responses = " + responses);
+            for (int monthCount = 0; monthCount < monthsDifference; monthCount = monthCount + 3) {
+                Calendar startDate = Calendar.getInstance();
+                startDate.setTime(beginningDate);
+                startDate.add(Calendar.MONTH, monthCount);
+                Calendar endDate = Calendar.getInstance();
+                endDate.setTime(startDate.getTime());
+                endDate.add(Calendar.MONTH, 3);
+                endDate.add(Calendar.DATE, -1);
 
-        System.out.println("selectedResponseFors = " + selectedResponseFors);
-
-//        ResponseFor[] rfs = (ResponseFor[]) selectedResponseFors.toArray();
-        for (ResponseFor rf : selectedResponseFors) {
-
-            for (Response r : responses) {
-                ChartSeries chartSeries = new ChartSeries();
-                String t = r.getName() + " - " + rf.toString();
-                System.out.println("t = " + t);
-                chartSeries.setLabel(t);
-
-                for (int monthCount = 0; monthCount < monthsDifference; monthCount = monthCount + 3) {
-
-                    Calendar startDate = Calendar.getInstance();
-                    startDate.setTime(beginningDate);
-                    startDate.add(Calendar.MONTH, monthCount);
-                    Calendar endDate = Calendar.getInstance();
-                    endDate.setTime(startDate.getTime());
-                    endDate.add(Calendar.MONTH, 3);
-                    endDate.add(Calendar.DATE, -1);
-
-                    m = new HashMap();
-                    m.put("fd", startDate.getTime());
-                    m.put("td", endDate.getTime());
-                    m.put("r", r);
-
-                    jpql = "Select count(q) from Questioner q where q.questionerDate between :fd and :td and q." + rf + "=:r";
-
-                    System.out.println("m = " + m);
-                    System.out.println("jpql = " + jpql);
-
-                    int q = (startDate.get(Calendar.MONTH) / 3) + 1;
-                    String period = new SimpleDateFormat("yyyy").format(startDate.getTime()) + " - " + q;
-
-                    Long l = queFacade.findLongBySQL(jpql, m);
-                    if (l > maxVal) {
-                        maxVal = l;
-                    }
-                    chartSeries.set(period, l);
-                    System.out.println("period = " + period);
-
-                }
-
-                model.addSeries(chartSeries);
+                int q = (startDate.get(Calendar.MONTH) / 3) + 1;
+                String period = new SimpleDateFormat("yy").format(startDate.getTime()) + "-" + q;
+                Double val = calculateResponsePercentage(r, rf, startDate.getTime(), endDate.getTime());
+                chartSeries.set(period, val);
+                System.out.println("period = " + period);
+                System.out.println("val = " + val);
 
             }
+
+            lcm.addSeries(chartSeries);
+            System.out.println("chartSeries = " + chartSeries);
+            System.out.println("lcm = " + lcm);
+
+            lcm.setLegendPosition("e");
+            lcm.setShowPointLabels(true);
+
+            Axis yAxis = lcm.getAxis(AxisType.Y);
+            yAxis.setLabel("Percentage");
+            yAxis.setMin(0);
+            yAxis.setMax(100);
+
+            Axis xAxis = lcm.getAxis(AxisType.X);
+            xAxis.setLabel("Quarter");
+
         }
-        model.setTitle("Customer Satisfaction");
-        model.setLegendPosition("e");
-        model.setShowPointLabels(true);
-        model.getAxes().put(AxisType.X, new CategoryAxis("Periods"));
-        Axis yAxis = model.getAxis(AxisType.Y);
-        yAxis = model.getAxis(AxisType.Y);
-        yAxis.setLabel("Responses");
-        yAxis.setMin(0);
-        yAxis.setMax(maxVal + maxVal * .2);
-        ccmReocrds = model;
+
     }
 
     public BarChartModel getCcmYearlyRepeatVisits() {
@@ -1431,6 +1516,9 @@ public class AnalysisController {
     }
 
     public LineChartModel getLineModel2() {
+        if(lineModel2==null){
+            lineModel2 = new LineChartModel();
+        }
         return lineModel2;
     }
 
@@ -1495,6 +1583,9 @@ public class AnalysisController {
     }
 
     public LineChartModel getLcReception() {
+        if (lcReception == null) {
+            lcReception = new LineChartModel();
+        }
         return lcReception;
     }
 
@@ -1503,6 +1594,9 @@ public class AnalysisController {
     }
 
     public LineChartModel getLcListening() {
+        if (lcListening == null) {
+            lcListening = new LineChartModel();
+        }
         return lcListening;
     }
 
@@ -1511,6 +1605,9 @@ public class AnalysisController {
     }
 
     public LineChartModel getLcReply() {
+        if (lcReply == null) {
+            lcReply = new LineChartModel();
+        }
         return lcReply;
     }
 
@@ -1519,6 +1616,9 @@ public class AnalysisController {
     }
 
     public LineChartModel getLcResponse() {
+        if (lcResponse == null) {
+            lcResponse = new LineChartModel();
+        }
         return lcResponse;
     }
 
@@ -1527,6 +1627,9 @@ public class AnalysisController {
     }
 
     public LineChartModel getLcEfficiency() {
+        if (lcEfficiency == null) {
+            lcEfficiency = new LineChartModel();
+        }
         return lcEfficiency;
     }
 
@@ -1534,15 +1637,21 @@ public class AnalysisController {
         this.lcEfficiency = lcEfficiency;
     }
 
-    public LineChartModel getLlcFacilities() {
-        return llcFacilities;
+    public LineChartModel getLcFacilities() {
+        if (lcFacilities == null) {
+            lcFacilities = new LineChartModel();
+        }
+        return lcFacilities;
     }
 
-    public void setLlcFacilities(LineChartModel llcFacilities) {
-        this.llcFacilities = llcFacilities;
+    public void setLcFacilities(LineChartModel lcFacilities) {
+        this.lcFacilities = lcFacilities;
     }
 
     public LineChartModel getLcGeneral() {
+        if (lcGeneral == null) {
+            lcGeneral = new LineChartModel();
+        }
         return lcGeneral;
     }
 
@@ -1550,6 +1659,4 @@ public class AnalysisController {
         this.lcGeneral = lcGeneral;
     }
 
-    
-    
 }
